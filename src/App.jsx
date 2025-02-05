@@ -1,31 +1,29 @@
-/* eslint-disable no-unused-vars */
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-// Importing page components
-import SignUp from "./pages/SignUp/signUp";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "../src/components/Layout/Layout";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import SignUp from "./pages/signUp/SignUp";
 import SignIn from "./pages/signIn/SignIn";
-import Sidebar from "./pages/sidebar/Sidebar";
+// import Beneficiaries from "./pages/Beneficiaries";
+// import Projects from "./pages/Projects";
+// import Finance from "./pages/Finance";
+// import Reports from "./pages/Reports";
 
-const App = () => {
+function App() {
   return (
     <Router>
-      <ToastContainer />
-
       <Routes>
-        {/* Route for Sign In */}
-        <Route path="/signin" element={<SignIn />} />
-
-        {/* Route for Sign Up */}
-        <Route path="/signup" element={<SignUp />} />
-
-        {/* Main Route for Sidebar and its nested routes */}
-        <Route path="/" element={<Sidebar />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="/signup" element={<SignUp/>} />
+          <Route path="/signin" element={<SignIn/>} />
+          {/* <Route path="beneficiaries" element={<Beneficiaries />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="finance" element={<Finance />} />
+          <Route path="reports" element={<Reports />} /> */}
+        </Route>
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;

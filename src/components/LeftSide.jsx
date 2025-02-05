@@ -1,9 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React from "react";
+import bgImg from "../assets/bgImg1.png";
 
 function LeftSide() {
   return (
-    <div className="hidden md:flex md:w-[30%] bg-blue-600 flex-col justify-center items-center p-8">
+    <div
+      className="hidden md:flex md:w-[30%] flex-col justify-center items-center p-8 bg-cover bg-center"
+      style={{ backgroundImage: `url(${bgImg})` }} 
+    >
       <div className="w-32 h-32 bg-white rounded-full mb-4 flex items-center justify-center">
         <span className="text-blue-600 text-3xl font-bold">Logo.</span>
       </div>

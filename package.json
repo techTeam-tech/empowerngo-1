@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "2.2.0",
     "@material-tailwind/react": "2.1.10",
     "bootstrap-icons": "1.11.3",
     "flowbite": "2.5.2",

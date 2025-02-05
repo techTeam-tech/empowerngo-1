@@ -10,6 +10,8 @@ import {
   FaMapMarkerAlt
 } from "react-icons/fa";
 import LeftSide from "../../components/LeftSide";
+import bgRight from "../../assets/bgRight.svg"
+
 // import validationSchema from "./validationSchema";
 
 function SignUp() {
@@ -24,7 +26,7 @@ function SignUp() {
     password: "",
     confirmPassword: "",
     documents: [],
-    acceptTerms: false,
+    acceptTerms: false
   });
 
   const totalSteps = 3;
@@ -51,7 +53,13 @@ function SignUp() {
 
       {/* Right side for sign-in form */}
 
-      <div className="w-full md:w-[70%] p-4 md:p-12 flex flex-col justify-center">
+      <div
+        className="w-full md:w-[70%] p-4 md:p-12 flex flex-col justify-center"
+        style={{
+          backgroundImage:`url(${bgRight})` ,
+          backgroundSize: "cover",
+        }}
+      >
         <div className="mb-8">
           <div className="flex justify-center items-center">
             {[1, 2, 3].map((step) => (

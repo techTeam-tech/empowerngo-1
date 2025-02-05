@@ -1,6 +1,4 @@
 import * as Yup from "yup";
-
-// Validation schema for the sign-in form
 const validationSchema = Yup.object({
   email: Yup.string()
     .email("Please enter a valid email address")
