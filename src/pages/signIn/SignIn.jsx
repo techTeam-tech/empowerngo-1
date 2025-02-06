@@ -1,35 +1,53 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import LeftSide from "../../components/LeftSide";
 import ForgotPasswordModal from "../../components/ForgotPasswordModal";
 import { toast } from "react-toastify"; 
 import LoadingSpinner from "../../components/LoadingSpinner"; 
-import bgRight from "../../assets/bgRight.svg"
+import bgRight from "../../assets/bgRight.svg";
+import { loginUser } from "../../api/masterApi";  
 
-function SignIn() {
+function SignIn({ setIsAuthenticated }) {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false); 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleForgotPasswordSuccess = (email) => {
     console.log(`Forgot password email sent to: ${email}`);
     setShowForgotPassword(false);
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
 
-    toast.success("Sign In Successful!");
+    if (!email || !password) {
+      toast.error("Please fill in both fields!");
+      return;
+    }
 
-    setTimeout(() => {
-      setLoading(true);
-    }, 500);
+    setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await loginUser({ email, password });
+      if (response.status === "SUCCESS") {
+        localStorage.setItem("authToken", response.payload.token);
+        localStorage.setItem("user", JSON.stringify(response.payload.user));
+        toast.success("Sign In Successful!");
+        setIsAuthenticated(true); 
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      } else {
+        toast.error("Login failed! Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-    }, 3000);
+    }
   };
-
   return (
     <div className="flex h-screen w-screen relative ">
       <LeftSide />
@@ -58,6 +76,8 @@ function SignIn() {
                 className="mt-1 block w-full px-4 py-2 lg:py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base lg:text-lg"
                 placeholder="Enter your email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} 
               />
             </div>
 
@@ -74,6 +94,8 @@ function SignIn() {
                 className="mt-1 block w-full px-4 py-2 lg:py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base lg:text-lg"
                 placeholder="Enter your password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} 
               />
             </div>
 

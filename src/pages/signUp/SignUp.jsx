@@ -48,11 +48,7 @@ function SignUp() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Left side component */}
       <LeftSide />
-
-      {/* Right side for sign-in form */}
-
       <div
         className="w-full md:w-[70%] p-4 md:p-12 flex flex-col justify-center"
         style={{
@@ -105,9 +101,7 @@ function SignUp() {
         <form className="max-w-3xl mx-auto w-full">
           {currentStep === 1 && (
             <div>
-              {/* Full Name and Email Inputs on the Same Line */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Full Name Input */}
                 <div className="relative mb-6">
                   <label
                     htmlFor="fullName"
@@ -131,8 +125,6 @@ function SignUp() {
                     />
                   </div>
                 </div>
-
-                {/* Email Input */}
                 <div className="relative mb-6">
                   <label
                     htmlFor="email"
@@ -157,10 +149,7 @@ function SignUp() {
                   </div>
                 </div>
               </div>
-
-              {/* NGO Name and Address Inputs on the Same Line */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* NGO Name Input */}
                 <div className="relative mb-6">
                   <label
                     htmlFor="ngoName"
@@ -184,8 +173,6 @@ function SignUp() {
                     />
                   </div>
                 </div>
-
-                {/* Address Input */}
                 <div className="relative mb-6">
                   <label
                     htmlFor="address"
@@ -210,10 +197,7 @@ function SignUp() {
                   </div>
                 </div>
               </div>
-
-              {/* Phone Number and City Dropdown Inputs on the Same Line */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Phone Number Input */}
                 <div className="relative mb-6">
                   <label
                     htmlFor="phone"
@@ -237,8 +221,6 @@ function SignUp() {
                     />
                   </div>
                 </div>
-
-                {/* City Dropdown Input */}
                 <div className="relative mb-6">
                   <label
                     htmlFor="city"
@@ -269,8 +251,6 @@ function SignUp() {
                   </div>
                 </div>
               </div>
-
-              {/* Terms and Privacy Checkbox */}
               <div className="relative mb-6">
                 <label
                   htmlFor="terms"
@@ -284,8 +264,7 @@ function SignUp() {
                     onChange={(e) =>
                       setFormData({ ...formData, terms: e.target.checked })
                     }
-                    className="form-checkbox text-blue-500 rounded-lg w-7 h-7 lg:w-8 lg:h-8" // Added custom size classes here
-                    required
+                    className="form-checkbox text-blue-500 rounded-lg w-7 h-7 lg:w-8 lg:h-8"
                   />
                   <span className="ml-2 text-sm lg:text-lg">
                     By signing up, you are creating an EmpowerNGO account, and
@@ -387,8 +366,6 @@ function SignUp() {
                   />
                 </div>
               </div>
-
-              {/* Password and Confirm Password Fields in the Same Line */}
               <div className="flex mb-6 space-x-4">
                 <div className="relative flex-1">
                   <label
