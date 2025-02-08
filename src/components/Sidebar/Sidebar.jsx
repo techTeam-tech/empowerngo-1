@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  
+import { Link, useNavigate } from 'react-router-dom';
 import {
   HomeIcon,
   UsersIcon,
@@ -18,18 +18,14 @@ import './style.css';
 const Sidebar = ({ setIsAuthenticated }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeMenu, setActiveMenu] = useState(null);
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const toggleMenu = (index) => setActiveMenu(activeMenu === index ? null : index);
 
-  const menuItems = [
-    { title: 'Dashboard', icon: <HomeIcon className="w-6 h-6 text-blue-400" />, subMenus: [] },
-    { title: 'Beneficiaries', icon: <UsersIcon className="w-6 h-6 text-green-400" />, subMenus: ['Manage', 'Tracking', 'Assessments'] },
-    { title: 'Projects', icon: <DocumentTextIcon className="w-6 h-6 text-purple-400" />, subMenus: ['Active', 'Planning', 'Archived'] },
-    { title: 'Finance', icon: <CurrencyDollarIcon className="w-6 h-6 text-yellow-400" />, subMenus: ['Donations', 'Expenses', 'Reports'] },
-    { title: 'Reports', icon: <ChartBarIcon className="w-6 h-6 text-red-400" />, subMenus: ['Monthly', 'Annual', 'Custom'] }
-  ];
+  const handleNavigation = (route) => {
+    navigate(route === "/dashboard" ? "/" : route);  
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
@@ -37,6 +33,46 @@ const Sidebar = ({ setIsAuthenticated }) => {
     setIsAuthenticated(false);
     navigate('/signin');
   };
+
+  const menuItems = [
+    { title: 'Dashboard', icon: <HomeIcon className="w-6 h-6 text-blue-400" />, route: '/dashboard', subMenus: [] },
+    { 
+      title: 'Manage Staff', 
+      icon: <UsersIcon className="w-6 h-6 text-green-400" />, 
+      subMenus: [
+        { title: 'Manage', route: '/addstaff' },
+        { title: 'Tracking', route: '/beneficiaries/tracking' },
+        { title: 'Assessments', route: '/beneficiaries/assessments' }
+      ] 
+    },
+    { 
+      title: 'Projects', 
+      icon: <DocumentTextIcon className="w-6 h-6 text-purple-400" />, 
+      subMenus: [
+        { title: 'Active', route: '/projects/active' },
+        { title: 'Planning', route: '/projects/planning' },
+        { title: 'Archived', route: '/projects/archived' }
+      ] 
+    },
+    { 
+      title: 'Finance', 
+      icon: <CurrencyDollarIcon className="w-6 h-6 text-yellow-400" />, 
+      subMenus: [
+        { title: 'Donations', route: '/finance/donations' },
+        { title: 'Expenses', route: '/finance/expenses' },
+        { title: 'Reports', route: '/finance/reports' }
+      ] 
+    },
+    { 
+      title: 'Reports', 
+      icon: <ChartBarIcon className="w-6 h-6 text-red-400" />, 
+      subMenus: [
+        { title: 'Monthly', route: '/reports/monthly' },
+        { title: 'Annual', route: '/reports/annual' },
+        { title: 'Custom', route: '/reports/custom' }
+      ] 
+    }
+  ];
 
   return (
     <>
@@ -46,6 +82,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
       >
         {isOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
       </button>
+
       <div
         className={`fixed top-0 left-0 h-full bg-blue-900 text-white transition-all duration-300 z-40 shadow-lg flex flex-col 
           ${isOpen ? 'w-72' : '-translate-x-full'} md:translate-x-0`}
@@ -65,7 +102,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
           {menuItems.map((item, index) => (
             <div key={index}>
               <button
-                onClick={() => toggleMenu(index)}
+                onClick={() => item.subMenus.length > 0 ? toggleMenu(index) : handleNavigation(item.route)}
                 className={`w-full flex items-center justify-between p-3 rounded-lg text-lg hover:bg-blue-800 transition-all 
                   ${activeMenu === index ? 'bg-blue-800' : ''}`}
               >
@@ -80,9 +117,13 @@ const Sidebar = ({ setIsAuthenticated }) => {
               {activeMenu === index && (
                 <div className="ml-8 mt-2 space-y-2">
                   {item.subMenus.map((subMenu, subIndex) => (
-                    <a key={subIndex} href="#" className="block p-2 text-sm rounded-lg hover:bg-blue-800 transition">
-                      {subMenu}
-                    </a>
+                    <button
+                      key={subIndex}
+                      onClick={() => handleNavigation(subMenu.route)}
+                      className="block w-full text-left p-2 text-sm rounded-lg hover:bg-blue-800 transition"
+                    >
+                      {subMenu.title}
+                    </button>
                   ))}
                 </div>
               )}

@@ -1,28 +1,42 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Layout from "../src/components/Layout/Layout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SignUp from "./pages/signUp/SignUp";
 import SignIn from "./pages/signIn/SignIn";
-import { useState } from "react";
+import AddStaff from "./components/Manage Staff/AddStaff";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  useEffect(() => {
+    // Check if user is authenticated from localStorage
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
-        {/* Routes without Layout (for unauthenticated users) */}
+        {/* Public Routes (Unauthenticated Users) */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={!isAuthenticated ? <SignIn setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/dashboard" />} />
 
-        {/* Routes with Layout (for authenticated users) */}
+        {/* Protected Routes (Authenticated Users) */}
         <Route
           path="/"
           element={isAuthenticated ? <Layout setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/signin" />}
         >
           <Route index element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="/addstaff" element={<AddStaff/>}/>
+          {/* Add other protected routes here */}
         </Route>
+
+        {/* Redirect unknown routes */}
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />} />
       </Routes>
     </Router>
   );
