@@ -46,12 +46,11 @@ const Sidebar = ({ setIsAuthenticated }) => {
       ] 
     },
     { 
-      title: 'Projects', 
+      title: 'Manage Donor', 
       icon: <DocumentTextIcon className="w-6 h-6 text-purple-400" />, 
       subMenus: [
-        { title: 'Active', route: '/projects/active' },
-        { title: 'Planning', route: '/projects/planning' },
-        { title: 'Archived', route: '/projects/archived' }
+        { title: 'Add Donor', route: '/adddonor' },
+        { title: 'Search Donor', route: '/searchDonor' },
       ] 
     },
     { 

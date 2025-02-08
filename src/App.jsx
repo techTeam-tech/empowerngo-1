@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import SignUp from "./pages/signUp/SignUp";
 import SignIn from "./pages/signIn/SignIn";
 import AddStaff from "./components/Manage Staff/AddStaff";
+import AddUpdateDonor from "./components/Manage Donor/AddDonor";
+import SearchDonor from "./components/Manage Donor/SearchDonor";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -31,6 +33,8 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="/addstaff" element={<AddStaff/>}/>
+          <Route path="/adddonor" element={<AddUpdateDonor/>}/>
+          <Route path="/searchDonor" element={<SearchDonor/>}/>
           {/* Add other protected routes here */}
         </Route>
 
