@@ -10,7 +10,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is authenticated from localStorage
     const token = localStorage.getItem("authToken");
     if (token) {
       setIsAuthenticated(true);

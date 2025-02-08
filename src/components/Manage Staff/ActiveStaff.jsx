@@ -4,8 +4,6 @@ import { FaUser, FaEnvelope, FaCheckCircle, FaTimesCircle, FaCalendar } from 're
 
 const PendingStaff = () => {
   const [staffData, setStaffData] = useState([]);
-
-  // Simulate fetching pending staff data
   useEffect(() => {
     const fetchData = async () => {
       const data = [
