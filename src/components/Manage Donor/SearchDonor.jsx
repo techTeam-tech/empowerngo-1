@@ -1,126 +1,123 @@
-import React, { useState, useEffect } from "react";
-import { FaSearch, FaUser, FaEnvelope, FaMapMarkerAlt, FaCity, FaMobile, FaIdCard, FaSpinner } from "react-icons/fa";
+import { useState } from "react";
+import { FiRefreshCcw } from "react-icons/fi"; 
 
-const SearchDonor = () => {
+const DonorSearch = () => {
+  const initialDonors = [
+    { name: "Amit Sharma", panNo: "ABCD1234E", lastName: "Sharma", email: "amit@example.com", mobile: "9876543210" },
+    { name: "Neha Gupta", panNo: "EFGH5678I", lastName: "Gupta", email: "neha@example.com", mobile: "8765432109" },
+    { name: "Rahul Mehta", panNo: "IJKL9101M", lastName: "Mehta", email: "rahul@example.com", mobile: "7654321098" },
+    { name: "Priya Singh", panNo: "MNOP2345Q", lastName: "Singh", email: "priya@example.com", mobile: "6543210987" },
+    { name: "Vikas Verma", panNo: "QRST6789U", lastName: "Verma", email: "vikas@example.com", mobile: "5432109876" },
+    { name: "Arun Yadav", panNo: "UVWX1111Z", lastName: "Yadav", email: "arun@example.com", mobile: "4321098765" },
+    { name: "Suman Rao", panNo: "YZAB2222X", lastName: "Rao", email: "suman@example.com", mobile: "3210987654" },
+    { name: "Kunal Patel", panNo: "CDEF3333W", lastName: "Patel", email: "kunal@example.com", mobile: "2109876543" },
+    { name: "Anjali Kapoor", panNo: "GHIJ4444V", lastName: "Kapoor", email: "anjali@example.com", mobile: "1098765432" },
+    { name: "Rohit Khanna", panNo: "KLMN5555U", lastName: "Khanna", email: "rohit@example.com", mobile: "9876543211" },
+    { name: "Pooja Das", panNo: "OPQR6666T", lastName: "Das", email: "pooja@example.com", mobile: "8765432102" },
+  ];
+
+  const [donors, setDonors] = useState(initialDonors);
   const [searchTerm, setSearchTerm] = useState("");
-  const [donors, setDonors] = useState([]);
-  const [filteredDonors, setFilteredDonors] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [filterBy, setFilterBy] = useState("name");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  // Dummy donor data for testing
-  useEffect(() => {
-    const dummyData = [
-      {
-        donorFName: "Rahul",
-        donorLName: "Sharma",
-        donorEmail: "rahul.sharma@example.com",
-        donorMobile: "9876543210",
-        donorCity: "Mumbai",
-        donorAddress: "123, Andheri West",
-        donorPAN: "ABCDE1234F",
-      },
-      {
-        donorFName: "Sneha",
-        donorLName: "Patel",
-        donorEmail: "sneha.patel@example.com",
-        donorMobile: "9988776655",
-        donorCity: "Delhi",
-        donorAddress: "456, Connaught Place",
-        donorPAN: "XYZAB5678G",
-      },
-    ];
-    setDonors(dummyData);
-    setFilteredDonors(dummyData);
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      const results = donors.filter(
-        (donor) =>
-          donor.donorFName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          donor.donorLName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          donor.donorEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          donor.donorMobile.includes(searchTerm)
-      );
-      setFilteredDonors(results);
-      setLoading(false);
-    }, 1000); // Simulating API delay
+  const refreshTable = () => {
+    setDonors(initialDonors);
+    setSearchTerm("");
+    setCurrentPage(1);
   };
 
-  return (
-    <div className="p-6 max-w-screen-lg mx-auto">
-      <h1 className="text-3xl font-semibold text-center mb-6 text-gray-800">Search Donor</h1>
-      
-      <form className="flex items-center gap-4 mb-6" onSubmit={handleSearch}>
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder="Search by Name, Email, or Mobile..."
-            className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            required
-          />
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        </div>
-        <button
-          type="submit"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300"
-        >
-          Search
-        </button>
-      </form>
+  const filteredDonors = donors.filter(donor =>
+    donor[filterBy].toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-      {loading ? (
-        <div className="flex justify-center items-center py-10">
-          <FaSpinner className="animate-spin text-blue-600 text-4xl" />
-        </div>
-      ) : filteredDonors.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="w-full bg-white shadow-md rounded-lg overflow-hidden border">
-            <thead className="bg-blue-600 text-white uppercase text-sm">
-              <tr>
-                <th className="px-4 py-3 text-left w-1/6">Name</th>
-                <th className="px-4 py-3 text-left w-1/6">Email</th>
-                <th className="px-4 py-3 text-left w-1/6">Mobile</th>
-                <th className="px-4 py-3 text-left w-1/6">City</th>
-                <th className="px-4 py-3 text-left w-1/4">Address</th>
-                <th className="px-4 py-3 text-left w-1/6">PAN</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredDonors.map((donor, index) => (
-                <tr key={index} className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <FaUser className="text-gray-500" /> {donor.donorFName} {donor.donorLName}
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <FaEnvelope className="text-gray-500" /> {donor.donorEmail}
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <FaMobile className="text-gray-500" /> {donor.donorMobile}
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <FaCity className="text-gray-500" /> {donor.donorCity}
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <FaMapMarkerAlt className="text-gray-500" /> {donor.donorAddress}
-                  </td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <FaIdCard className="text-gray-500" /> {donor.donorPAN}
-                  </td>
-                </tr>
+  const totalPages = Math.ceil(filteredDonors.length / itemsPerPage);
+  const paginatedDonors = filteredDonors.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  return (
+    <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-4">Search Donor</h2>
+
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 w-full rounded"
+        />
+        <select
+          value={filterBy}
+          onChange={(e) => setFilterBy(e.target.value)}
+          className="border p-2 rounded"
+        >
+          <option value="name">Name</option>
+          <option value="panNo">PAN No</option>
+          <option value="lastName">Last Name</option>
+          <option value="email">Email</option>
+          <option value="mobile">Mobile</option>
+        </select>
+
+        <button
+          onClick={refreshTable}
+          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-800 transition"
+          title="Refresh Table"
+        >
+          <FiRefreshCcw size={20} />
+        </button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border rounded-lg">
+          <thead>
+            <tr className="bg-gray-100">
+              {["Name", "PAN No", "Last Name", "Email", "Mobile"].map((header) => (
+                <th key={header} className="border px-4 py-2">{header}</th>
               ))}
-            </tbody>
-          </table>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedDonors.length > 0 ? (
+              paginatedDonors.map((donor, index) => (
+                <tr key={index} className="border">
+                  <td className="border px-4 py-2">{donor.name}</td>
+                  <td className="border px-4 py-2">{donor.panNo}</td>
+                  <td className="border px-4 py-2">{donor.lastName}</td>
+                  <td className="border px-4 py-2">{donor.email}</td>
+                  <td className="border px-4 py-2">{donor.mobile}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center py-4 text-red-500">No donors found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-4 space-x-2">
+          <button
+            className={`px-4 py-2 border rounded ${currentPage === 1 ? "bg-gray-300" : "bg-blue-600 text-white"}`}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <span className="px-4">{currentPage} / {totalPages}</span>
+          <button
+            className={`px-4 py-2 border rounded ${currentPage === totalPages ? "bg-gray-300" : "bg-blue-600 text-white"}`}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
         </div>
-      ) : (
-        <p className="text-center text-gray-600">No donors found</p>
       )}
     </div>
   );
 };
 
-export default SearchDonor;
+export default DonorSearch;

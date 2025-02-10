@@ -1,136 +1,123 @@
-/* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import { FaUser, FaEnvelope, FaIdCard, FaPhone, FaMapMarkedAlt, FaCalendarAlt, FaBuilding, FaBriefcase } from "react-icons/fa";
-import Loading from "../LoadingSpinner";
+import { useState } from "react";
+import { FaUser, FaEnvelope, FaPhone, FaUserShield, FaLock } from "react-icons/fa";
 
 const AddStaff = () => {
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    staffName: "",
-    staffEmail: "",
-    staffId: "",
-    designation: "",
+    name: "",
+    level: "",
+    email: "",
     phone: "",
-    address: "",
-    joiningDate: "",
-    ngoName: "XYZ NGO",
+    username: "",
+    password: "",
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      alert("Staff member added successfully!");
-      setFormData({
-        staffName: "",
-        staffEmail: "",
-        staffId: "",
-        designation: "",
-        phone: "",
-        address: "",
-        joiningDate: "",
-        ngoName: "XYZ NGO",
-      });
-    } catch (error) {
-      console.error("Error adding staff:", error);
-    } finally {
-      setLoading(false);
-    }
+    console.log("Staff Data:", formData);
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="flex-1 p-6 overflow-auto">
-        <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800">Add New Staff Member</h1>
-        {loading && <Loading />}
-        <form 
-          onSubmit={handleSubmit} 
-          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 max-w-5xl mx-auto bg-white p-6 shadow-lg rounded-lg"
-        >
-          {[
-            { id: "staffName", type: "text", placeholder: "Staff Name", icon: <FaUser /> },
-            { id: "staffEmail", type: "email", placeholder: "Email", icon: <FaEnvelope /> },
-            { id: "staffId", type: "text", placeholder: "Staff ID", icon: <FaIdCard /> },
-            { id: "designation", type: "text", placeholder: "Designation", icon: <FaBriefcase /> },
-            { id: "phone", type: "tel", placeholder: "Phone Number", icon: <FaPhone /> },
-          ].map(({ id, type, placeholder, icon }) => (
-            <div key={id} className="relative">
-              <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor={id}>{placeholder}</label>
-              <div className="flex items-center border rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
-                <span className="px-3 text-gray-500">{icon}</span>
+    <div className="w-full h-screen flex items-center justify-center bg-gray-100 pb-20">
+      <div className="w-full max-w-4xl bg-white p-10 shadow-2xl rounded-lg border border-gray-200">
+        <h2 className="text-3xl font-semibold mb-6 text-gray-800 text-center">Add Staff</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Full Name <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <FaUser className="absolute left-3 top-4 text-gray-400" />
                 <input
-                  id={id}
-                  type={type}
-                  value={formData[id]}
+                  type="text"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  placeholder={placeholder}
-                  className="px-4 py-3 w-full focus:outline-none"
                   required
+                  className="w-full p-4 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
             </div>
-          ))}
-
-          <div className="relative col-span-2">
-            <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="address">Staff Address</label>
-            <div className="flex items-start border rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
-              <span className="px-3 py-3 text-gray-500"><FaMapMarkedAlt /></span>
-              <textarea
-                id="address"
-                value={formData.address}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Level <span className="text-red-500">*</span></label>
+              <select
+                name="level"
+                value={formData.level}
                 onChange={handleChange}
-                placeholder="Enter Staff Address"
-                className="px-4 py-3 w-full focus:outline-none"
-                rows="3"
                 required
-              />
+                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">Select Level</option>
+                <option value="Manager">Manager</option>
+                <option value="Officer">Officer</option>
+              </select>
             </div>
           </div>
-
-          <div className="relative">
-            <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="joiningDate">Joining Date</label>
-            <div className="flex items-center border rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
-              <span className="px-3 text-gray-500"><FaCalendarAlt /></span>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Email Address</label>
+            <div className="relative">
+              <FaEnvelope className="absolute left-3 top-4 text-gray-400" />
               <input
-                id="joiningDate"
-                type="date"
-                value={formData.joiningDate}
+                type="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
-                className="px-4 py-3 w-full focus:outline-none"
-                required
+                className="w-full p-4 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
           </div>
-
-          <div className="relative">
-            <label className="block text-sm font-medium mb-2 text-gray-700" htmlFor="ngoName">NGO Name</label>
-            <div className="flex items-center border rounded-lg shadow-sm bg-gray-200 text-gray-600 cursor-not-allowed overflow-hidden">
-              <span className="px-3 text-gray-500"><FaBuilding /></span>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Phone Number <span className="text-red-500">*</span></label>
+            <div className="relative">
+              <FaPhone className="absolute left-3 top-4 text-gray-400" />
               <input
-                id="ngoName"
-                type="text"
-                value={formData.ngoName}
-                className="px-4 py-3 w-full focus:outline-none bg-gray-200 cursor-not-allowed"
-                readOnly
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="w-full p-4 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
           </div>
-
-          <div className="col-span-full">
-            <button
-              type="submit"
-              className={`w-full px-6 py-3 text-white rounded-lg shadow-lg transform transition duration-300 ease-in-out ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
-              disabled={loading}
-            >
-              {loading ? "Processing..." : "Add Staff"}
-            </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Username <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <FaUserShield className="absolute left-3 top-4 text-gray-400" />
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-4 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Password <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <FaLock className="absolute left-3 top-4 text-gray-400" />
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-4 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+            </div>
           </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition font-medium text-lg"
+          >
+            Add Staff
+          </button>
         </form>
       </div>
     </div>

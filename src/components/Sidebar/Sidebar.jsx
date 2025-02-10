@@ -40,7 +40,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
       title: 'Manage Staff', 
       icon: <UsersIcon className="w-6 h-6 text-green-400" />, 
       subMenus: [
-        { title: 'Manage', route: '/addstaff' },
+        { title: 'AddStaff', route: '/addstaff' },
         { title: 'Tracking', route: '/beneficiaries/tracking' },
         { title: 'Assessments', route: '/beneficiaries/assessments' }
       ] 

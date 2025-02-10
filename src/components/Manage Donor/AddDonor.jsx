@@ -1,146 +1,116 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
-import {
-  FaUser, FaEnvelope, FaPhone, FaMapMarkedAlt, FaCity,
-  FaGlobe, FaFlag, FaBuilding, FaIdCard, FaBriefcase
-} from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaUser, FaMobileAlt, FaEnvelope, FaAddressCard } from "react-icons/fa";
+import axios from "axios";
 
-const AddUpdateDonor = () => {
+const DonorForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://restcountries.com/v3.1/all").then((res) => {
+      setCountries(res.data.map((c) => c.name.common).sort());
+    });
+  }, []);
+
+  const onSubmit = (data) => console.log(data);
+
   return (
-    <div className="p-8 max-w-screen-lg mx-auto">
-      <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800">Add / Update Donor</h1>
-      <form className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2">
-        {/* First Name */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">First Name</label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Enter First Name"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
+    <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg border">
+      <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Donor Form</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-6">
+        <div>
+          <label className="block font-medium text-gray-700">Salutation <span className="text-red-500">*</span></label>
+          <select {...register("salutation", { required: true })} className="mt-1 w-full border p-2 rounded">
+            <option value="">Select</option>
+            <option>Mr</option>
+            <option>Ms</option>
+            <option>Dr</option>
+          </select>
         </div>
-        
-        {/* Middle Name */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">Middle Name</label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Enter Middle Name"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-            />
-            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
+        <div>
+          <label className="block font-medium text-gray-700">Donor Type</label>
+          <select {...register("donorType")} className="mt-1 w-full border p-2 rounded">
+            <option>Individual</option>
+            <option>Organization</option>
+          </select>
         </div>
-        
-        {/* Last Name */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">Last Name</label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Enter Last Name"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+
+        <div>
+          <label className="block font-medium text-gray-700">First Name <span className="text-red-500">*</span></label>
+          <div className="flex items-center border rounded p-2 mt-1">
+            <FaUser className="text-gray-500 mr-2" />
+            <input {...register("firstName", { required: true })} placeholder="Enter first name" className="w-full outline-none" />
           </div>
+          {errors.firstName && <p className="text-red-500 text-sm">First name is required</p>}
         </div>
-        
-        {/* Address */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">Address</label>
-          <div className="relative">
-            <textarea
-              placeholder="Enter Address"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows="3"
-              required
-            />
+        <div>
+          <label className="block font-medium text-gray-700">Last Name</label>
+          <div className="flex items-center border rounded p-2 mt-1">
+            <FaUser className="text-gray-500 mr-2" />
+            <input {...register("lastName")} placeholder="Enter last name" className="w-full outline-none" />
           </div>
         </div>
 
-        {/* City */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">City</label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Enter City"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaCity className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        <div>
+          <label className="block font-medium text-gray-700">Mobile <span className="text-red-500">*</span></label>
+          <div className="flex items-center border rounded p-2 mt-1">
+            <FaMobileAlt className="text-gray-500 mr-2" />
+            <input type="tel" {...register("mobile", { required: true })} placeholder="Enter mobile number" className="w-full outline-none" />
           </div>
+          {errors.mobile && <p className="text-red-500 text-sm">Mobile number is required</p>}
         </div>
-        
-        {/* State */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">State</label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Enter State"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaFlag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        <div>
+          <label className="block font-medium text-gray-700">Email</label>
+          <div className="flex items-center border rounded p-2 mt-1">
+            <FaEnvelope className="text-gray-500 mr-2" />
+            <input type="email" {...register("email")} placeholder="Enter email" className="w-full outline-none" />
           </div>
         </div>
 
-        {/* Country */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">Country</label>
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Enter Country"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaGlobe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        <div>
+          <label className="block font-medium text-gray-700">Address <span className="text-red-500">*</span></label>
+          <div className="flex items-center border rounded p-2 mt-1">
+            <FaAddressCard className="text-gray-500 mr-2" />
+            <input {...register("address", { required: true })} placeholder="Enter address" className="w-full outline-none" />
           </div>
+          {errors.address && <p className="text-red-500 text-sm">Address is required</p>}
+        </div>
+        <div>
+          <label className="block font-medium text-gray-700">Upload PAN Image</label>
+          <input type="file" {...register("panImage")} className="mt-1 w-full border p-2 rounded" />
         </div>
 
-        {/* Mobile */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">Mobile</label>
-          <div className="relative">
-            <input
-              type="tel"
-              placeholder="Enter Mobile Number"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
+        <div>
+          <label className="block font-medium text-gray-700">Country <span className="text-red-500">*</span></label>
+          <select {...register("country", { required: true })} className="mt-1 w-full border p-2 rounded">
+            <option value="">Select Country</option>
+            {countries.map((country, index) => (
+              <option key={index} value={country}>{country}</option>
+            ))}
+          </select>
+          {errors.country && <p className="text-red-500 text-sm">Country is required</p>}
         </div>
 
-        {/* Email */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-2 text-gray-700">Email</label>
-          <div className="relative">
-            <input
-              type="email"
-              placeholder="Enter Email"
-              className="px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pl-12"
-              required
-            />
-            <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          </div>
+        <div>
+          <label className="block font-medium text-gray-700">State <span className="text-red-500">*</span></label>
+          <input
+            {...register("state", { required: true })}
+            placeholder="Enter state"
+            className="mt-1 w-full border p-2 rounded"
+          />
+          {errors.state && <p className="text-red-500 text-sm">State is required</p>}
         </div>
 
-        {/* Submit Button */}
-        <div className="col-span-full">
-          <button
-            type="submit"
-            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transform transition duration-300 ease-in-out"
-          >
-            Save Donor
+        <div className="col-span-2">
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium transition">
+            Submit
           </button>
         </div>
       </form>
@@ -148,4 +118,4 @@ const AddUpdateDonor = () => {
   );
 };
 
-export default AddUpdateDonor;
+export default DonorForm;
