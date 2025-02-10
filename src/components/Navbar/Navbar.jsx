@@ -21,7 +21,7 @@ const Navbar = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <nav className="bg-blue-900 text-white shadow-lg fixed top-0 left-0 md:left-80 right-0 z-50 h-24 lg:h-25 flex items-center px-6 lg:px-10">
+    <nav className="bg-blue-900 text-white shadow-lg fixed top-0 left-72 right-0 z-50 h-24 lg:h-25 flex items-center px-6 lg:px-10">
       <div className="relative w-72 lg:w-96 hidden md:block">
         <input
           type="text"
