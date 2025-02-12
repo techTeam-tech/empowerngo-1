@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import LeftSide from "../../components/LeftSide";
 import bgRight from "../../assets/bgRight.svg"
+import { toast } from "react-toastify";
 
 // import validationSchema from "./validationSchema";
 
@@ -46,6 +47,7 @@ function SignUp() {
     }
   };
 
+ }
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <LeftSide />

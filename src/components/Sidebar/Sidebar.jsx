@@ -97,7 +97,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
             <p className="text-sm text-blue-300">Super Admin</p>
           </div>
         </div>
-        <div className="flex-grow p-4 space-y-2 overflow-auto">
+        <div className="flex-grow p-4 space-y-2 overflow-auto sidebar-content">
           {menuItems.map((item, index) => (
             <div key={index}>
               <button
