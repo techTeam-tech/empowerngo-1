@@ -12,3 +12,15 @@ export const loginUser = async (credentials) => {
     throw error.response?.data || error.message;
   }
 };
+
+
+
+export const registerNgo = async (formData) => {
+  try {
+    const response = await api.post("/manageNGO", { ...formData, reqType: "s" });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
