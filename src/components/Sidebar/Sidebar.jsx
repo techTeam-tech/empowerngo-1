@@ -37,7 +37,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
   const menuItems = [
     { title: 'Dashboard', icon: <HomeIcon className="w-6 h-6 text-blue-400" />, route: '/dashboard', subMenus: [] },
     { 
-      title: 'Manage Staff', 
+      title: 'Manage User', 
       icon: <UsersIcon className="w-6 h-6 text-green-400" />, 
       subMenus: [
         { title: 'AddStaff', route: '/addstaff' },
@@ -54,7 +54,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
       ] 
     },
     { 
-      title: 'Finance', 
+      title: 'Manage Donoations', 
       icon: <CurrencyDollarIcon className="w-6 h-6 text-yellow-400" />, 
       subMenus: [
         { title: 'Donations', route: '/finance/donations' },
@@ -63,10 +63,10 @@ const Sidebar = ({ setIsAuthenticated }) => {
       ] 
     },
     { 
-      title: 'Reports', 
+      title: 'Manage NGOs', 
       icon: <ChartBarIcon className="w-6 h-6 text-red-400" />, 
       subMenus: [
-        { title: 'Monthly', route: '/reports/monthly' },
+        { title: 'Add NGO', route: '/registerNgo' },
         { title: 'Annual', route: '/reports/annual' },
         { title: 'Custom', route: '/reports/custom' }
       ] 
