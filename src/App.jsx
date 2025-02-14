@@ -7,6 +7,7 @@ import SignIn from "./pages/signIn/SignIn";
 import AddStaff from "./components/Manage Staff/AddStaff";
 import AddUpdateDonor from "./components/Manage Donor/AddDonor";
 import SearchDonor from "./components/Manage Donor/SearchDonor";
+import AddNgo from "./components/Manage Ngo/ManageNgo";
 
 // Define role codes
 const ROLES = {
@@ -46,7 +47,8 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/signup" element={<SignUp />} />
+        
+        <Route path="signup" element={<SignUp />} />
         <Route path="/signin" element={!isAuthenticated ? <SignIn setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/dashboard" />} />
 
         {/* Protected Routes */}
@@ -66,12 +68,20 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/registerNgo"
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN]}>
+                <AddNgo />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin & Super Admin Routes */}
           <Route
             path="/adddonor"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}>
+              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN]}>
                 <AddUpdateDonor />
               </ProtectedRoute>
             }
@@ -81,7 +91,7 @@ function App() {
           <Route
             path="/searchDonor"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
+              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
                 <SearchDonor />
               </ProtectedRoute>
             }
