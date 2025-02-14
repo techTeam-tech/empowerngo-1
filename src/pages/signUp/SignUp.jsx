@@ -12,18 +12,31 @@ import {
 import LeftSide from "../../components/LeftSide";
 import bgRight from "../../assets/bgRight.svg"
 import { toast } from "react-toastify";
+import { registerNgo } from "../../api/masterApi";
 
 // import validationSchema from "./validationSchema";
 
 function SignUp() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
     ngoName: "",
-    city: "",
-    address: "",
-    phone: "",
+    ngoAddress: "",
+    ngoCity: "",
+    ngoState: "",
+    ngoCountry: "",
+    ngoPinCode: "",
+    ngoEmail: "",
+    ngoContact: "",
+    ngo80GNumber: "",
+    ngo12ANumber: "",
+    ngoCSRNumber: "",
+    ngoFCRANumber: "",
+    ngoPAN: "",
+    contactPerson: "",
+    ngoRegNumber: "",
+    logoURL: "",
+    signatureURL: "",
+    authorizedPerson: "",
     password: "",
     confirmPassword: "",
     documents: [],
@@ -47,6 +60,29 @@ function SignUp() {
     }
   };
 
+
+const handleSubmit = async () => {
+  try {
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "documents") {
+        formData[key].forEach((file) => formDataToSend.append("documents", file));
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+
+    const response = await registerNgo(formDataToSend);
+    toast.success("NGO registered successfully!");
+    console.log("Registration success:", response);
+  } catch (error) {
+    toast.error(error.message || "Registration failed");
+    console.error("Registration error:", error);
+  }
+};
+
+
+ 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <LeftSide />
