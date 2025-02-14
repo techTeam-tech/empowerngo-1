@@ -70,7 +70,15 @@ const Sidebar = ({ setIsAuthenticated }) => {
         { title: 'Annual', route: '/reports/annual' },
         { title: 'Custom', route: '/reports/custom' }
       ] 
-    }
+    },
+    { 
+      title: 'Manage Projects', 
+      icon: <DocumentTextIcon className="w-6 h-6 text-purple-400" />, 
+      subMenus: [
+        { title: 'Add Project', route: '/addproject' },
+        { title: 'Search Donor', route: '/searchDonor' },
+      ] 
+    },
   ];
 
   return (

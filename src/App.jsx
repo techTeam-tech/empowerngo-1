@@ -8,6 +8,7 @@ import AddStaff from "./components/Manage Staff/AddStaff";
 import AddUpdateDonor from "./components/Manage Donor/AddDonor";
 import SearchDonor from "./components/Manage Donor/SearchDonor";
 import AddNgo from "./components/Manage Ngo/ManageNgo";
+import ProjectAndPurpose from "./components/ManageProject/AddProject";
 
 // Define role codes
 const ROLES = {
@@ -73,6 +74,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN]}>
                 <AddNgo />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/addproject"
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN,ROLES.NGO_ADMIN]}>
+                <ProjectAndPurpose />
               </ProtectedRoute>
             }
           />
