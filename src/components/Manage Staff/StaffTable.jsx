@@ -16,8 +16,6 @@ const StaffTable = ({ staffList, setEditStaff }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  // Memoized filtering for better performance
   const filteredStaff = useMemo(() => {
     return searchTerm
       ? staffList.filter((staff) =>
@@ -25,8 +23,6 @@ const StaffTable = ({ staffList, setEditStaff }) => {
         )
       : staffList;
   }, [staffList, searchTerm]);
-
-  // Handle pagination change
   const handleChangePage = (_, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -36,8 +32,6 @@ const StaffTable = ({ staffList, setEditStaff }) => {
   return (
     <Paper className="mt-6 p-6">
       <h2 className="text-xl font-bold mb-4 text-gray-800">Staff List</h2>
-
-      {/* Search Input with Clear Button */}
       <div className="flex items-center gap-2 mb-4">
         <TextField
           label="Search by name..."
@@ -103,8 +97,6 @@ const StaffTable = ({ staffList, setEditStaff }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Pagination */}
       <TablePagination
         component="div"
         count={filteredStaff.length}

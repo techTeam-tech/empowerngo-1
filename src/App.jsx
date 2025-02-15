@@ -72,7 +72,7 @@ function App() {
             path="addstaff"
             element={
               <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}>
-                <AddStaff />
+                <Managestaff />
               </ProtectedRoute>
             }
           />
@@ -112,9 +112,9 @@ function App() {
             }
           />
           <Route
-            path="manageUser"
+            path="/manageUser"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF,ROLES.SUPER_ADMIN]}>
+              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN,ROLES.SUPER_ADMIN]}>
                 <Managestaff />
               </ProtectedRoute>
             }
