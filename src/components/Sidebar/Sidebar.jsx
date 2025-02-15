@@ -6,34 +6,53 @@ import {
   DocumentTextIcon,
   ChartBarIcon,
   CurrencyDollarIcon,
-  ChevronRightIcon,
-  ChevronDownIcon,
   XMarkIcon,
   Bars3Icon,
-  ArrowLeftOnRectangleIcon
-} from '@heroicons/react/24/outline';
-import './style.css';
+  ArrowLeftOnRectangleIcon,
+} from "@heroicons/react/24/outline";
+import { roleColors, roleNames, roleShortForms, menuItems } from "../../utils/constants";
+import "./style.css";
+
+const iconComponents = {
+  HomeIcon,
+  UsersIcon,
+  DocumentTextIcon,
+  ChartBarIcon,
+  CurrencyDollarIcon,
+};
 
 const Sidebar = ({ setIsAuthenticated }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
-  const toggleMenu = (index) => setActiveMenu(activeMenu === index ? null : index);
+  const user = useMemo(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user")) || {
+      FULL_NAME: "Admin User",
+      NGO_NAME: "Default NGO",
+      ROLE_CODE: 1,
+    };
+    return {
+      ...storedUser,
+      shortForm: roleShortForms[storedUser.ROLE_CODE] || "??",
+    };
+  }, []);
 
-  const handleNavigation = (route) => {
-    navigate(route === "/dashboard" ? "/" : route);  
-  };
+  const toggleSidebar = useCallback(() => setIsOpen((prev) => !prev), []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+  const handleNavigation = useCallback(
+    (route) => navigate(route === "/dashboard" ? "/" : route),
+    [navigate]
+  );
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
     navigate("/signin");
   }, [navigate, setIsAuthenticated]);
 
   // Filter menu items based on role from constants
+  //tejas
   const filteredMenuItems = menuItems.filter((item) =>
     item.roles.includes(user.ROLE_CODE)
   );
@@ -48,61 +67,59 @@ const Sidebar = ({ setIsAuthenticated }) => {
       </button>
 
       <div
-        className={`fixed top-0 left-0 h-full bg-blue-900 text-white transition-all duration-300 z-40 shadow-lg flex flex-col 
-          ${isOpen ? 'w-72' : '-translate-x-full'} md:translate-x-0`}
+        className={`fixed top-0 left-0 h-full bg-blue-900 text-white transition-all duration-300 z-40 shadow-lg flex flex-col ${
+          isOpen ? "w-72" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         <div className="p-5 bg-blue-800 flex flex-col items-center border-b border-blue-700">
           <h1 className="text-2xl font-bold">NGO ERP</h1>
           <p className="text-sm text-blue-200">Empowering Communities</p>
         </div>
+
         <div className="p-5 flex items-center space-x-4 border-b border-blue-700">
-          <div className="w-12 h-12 bg-blue-700 rounded-full flex items-center justify-center text-xl font-semibold">AD</div>
+          <div
+            className={`w-12 h-12 ${
+              roleColors[user.ROLE_CODE] || "bg-gray-600"
+            } rounded-full flex items-center justify-center text-xl font-semibold`}
+          >
+            {user.shortForm}
+          </div>
           <div>
-            <p className="text-lg font-semibold">Admin User</p>
-            <p className="text-sm text-blue-300">Super Admin</p>
+            <p className="text-lg font-semibold">{user.FULL_NAME}</p>
+            <p className="text-sm text-blue-300">
+              {roleNames[user.ROLE_CODE] || "Unknown Role"}
+            </p>
           </div>
         </div>
+
         <div className="flex-grow p-4 space-y-2 overflow-auto sidebar-content">
           {filteredMenuItems.map((item, index) => {
             const IconComponent = iconComponents[item.icon];
             return (
               <button
-                onClick={() => item.subMenus.length > 0 ? toggleMenu(index) : handleNavigation(item.route)}
-                className={`w-full flex items-center justify-between p-3 rounded-lg text-lg hover:bg-blue-800 transition-all 
-                  ${activeMenu === index ? 'bg-blue-800' : ''}`}
+                key={index}
+                onClick={() => handleNavigation(item.route)}
+                className="w-full flex items-center p-3 rounded-lg text-lg hover:bg-blue-800 transition-all"
               >
                 <div className="flex items-center space-x-3">
-                  {item.icon}
+                  {IconComponent && <IconComponent className="w-6 h-6 text-blue-400" />}
                   <span>{item.title}</span>
                 </div>
-                {item.subMenus.length > 0 && (
-                  activeMenu === index ? <ChevronDownIcon className="w-5 h-5" /> : <ChevronRightIcon className="w-5 h-5" />
-                )}
               </button>
-              {activeMenu === index && (
-                <div className="ml-8 mt-2 space-y-2">
-                  {item.subMenus.map((subMenu, subIndex) => (
-                    <button
-                      key={subIndex}
-                      onClick={() => handleNavigation(subMenu.route)}
-                      className="block w-full text-left p-2 text-sm rounded-lg hover:bg-blue-800 transition"
-                    >
-                      {subMenu.title}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
+
         <div className="p-4 border-t border-blue-700">
           <button
-            onClick={handleLogout}  
+            onClick={handleLogout}
             className="w-full flex items-center justify-center p-3 bg-red-600 rounded-lg text-lg font-semibold hover:bg-red-700 transition"
           >
             <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" /> Logout
           </button>
-          <p className="text-sm text-blue-300 text-center mt-3">© 2023 NGO ERP v1.0</p>
+          <p className="text-sm text-blue-300 text-center mt-3">
+            © 2025 NGO ERP v1.0
+          </p>
         </div>
       </div>
     </>
