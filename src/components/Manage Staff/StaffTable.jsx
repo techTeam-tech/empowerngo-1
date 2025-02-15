@@ -31,7 +31,7 @@ const StaffTable = ({ staffList, setEditStaff }) => {
 
   return (
     <Paper className="mt-6 p-6">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Staff List</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800">User List</h2>
       <div className="flex items-center gap-2 mb-4">
         <TextField
           label="Search by name..."
@@ -50,8 +50,6 @@ const StaffTable = ({ staffList, setEditStaff }) => {
           Clear
         </Button>
       </div>
-
-      {/* Staff Table */}
       <TableContainer>
         <Table>
           <TableHead>

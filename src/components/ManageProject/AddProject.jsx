@@ -74,17 +74,17 @@ const ProjectAndPurpose = () => {
       let response;
       if (editingProject) {
         formData.append("projectID", Number(editingProject.PROJECT_ID));
-        response = await manageProject(formData, "u"); // Update Project
+        response = await manageProject(formData, "u"); 
         setProjects((prev) =>
           prev.map((proj) =>
             proj.PROJECT_ID === editingProject.PROJECT_ID ? { ...proj, projectName: data.projectName } : proj
           )
         );
       } else {
-        response = await manageProject(formData, "s"); // Add New Project
+        response = await manageProject(formData, "s"); 
         setProjects((prev) => [
           ...prev,
-          { PROJECT_ID: response.projectID, projectName: data.projectName, ngoName: "Your NGO Name" }, // Adjust NGO name accordingly
+          { PROJECT_ID: response.projectID, projectName: data.projectName, ngoName: "Your NGO Name" }, 
         ]);
       }
   
@@ -108,16 +108,14 @@ const ProjectAndPurpose = () => {
       setLoading(true);
       let formData = new FormData();
       formData.append("ngoID", ngoID);
-      formData.append("projectID", Number(data.projectID)); // 🛠️ FIX: Convert projectID to number
+      formData.append("projectID", Number(data.projectID)); 
       formData.append("purposeName", data.purposeName);
       formData.append("createdBy", createdBy);
-
-      // 🛠️ FIX: Convert purposeID to number before sending
       if (editingPurpose) {
         formData.append("purposeID", Number(editingPurpose.PURPOSE_ID));
-        await managePurpose(formData, "u"); // Update Purpose
+        await managePurpose(formData, "u"); 
       } else {
-        await managePurpose(formData, "s"); // Add New Purpose
+        await managePurpose(formData, "s"); 
       }
 
       toast.success(editingPurpose ? "Purpose updated successfully" : "Purpose added successfully");
@@ -133,7 +131,6 @@ const ProjectAndPurpose = () => {
 
   return (
     <div className="flex flex-wrap justify-center min-h-screen bg-gray-100 py-10 gap-10">
-      {/* Project Section */}
       <div className="max-w-2xl w-full bg-white p-8 rounded-2xl shadow-xl border relative">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Project Registration</h2>
         {loading && (
@@ -154,7 +151,6 @@ const ProjectAndPurpose = () => {
             <thead>
               <tr className="bg-yellow-600 text-white">
                 <th className="px-6 py-3 text-left border-b">Project Name</th>
-                {/* <th className="px-6 py-3 text-left border-b">NGO Name</th> */}
                 <th className="px-6 py-3 text-left border-b">Actions</th>
               </tr>
             </thead>
@@ -162,7 +158,6 @@ const ProjectAndPurpose = () => {
               {projects.map((project, index) => (
                 <tr key={index} className="border-b hover:bg-gray-100">
                   <td className="px-6 py-3 text-left font-semibold">{project.projectName || project.PROJECT_NAME}</td>
-                  {/* <td className="px-6 py-3 text-left">{project.ngoName || project.NGO_NAME}</td> */}
                   <td className="px-6 py-3 text-left flex space-x-4">
                     <button onClick={() => handleEditProject(index)} className="text-blue-600 hover:opacity-75">
                       <FaEdit size={18} />
@@ -179,9 +174,6 @@ const ProjectAndPurpose = () => {
           <p className="text-gray-600 text-center">No projects added yet.</p>
         )}
       </div>
-
-
-      {/* Purpose Section */}
       <div className="max-w-2xl w-full bg-white p-8 rounded-2xl shadow-xl border relative">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Purpose Registration</h2>
         <form onSubmit={handleSubmitPurpose(onSubmitPurpose)} className="grid grid-cols-1 gap-6 mb-8">

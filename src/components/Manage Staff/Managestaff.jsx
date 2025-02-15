@@ -28,7 +28,7 @@ const ManageStaff = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold text-left mb-6 text-blue-700 underline">Manage Staff</h1>
+      <h1 className="text-3xl font-bold text-left mb-6 text-blue-700 underline">Manage User</h1>
       <AddStaff onAddOrUpdateStaff={handleAddOrUpdateStaff} editStaff={editStaff} setEditStaff={setEditStaff} />
       <StaffTable staffList={staffList} setEditStaff={setEditStaff} />
     </div>

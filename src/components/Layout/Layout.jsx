@@ -2,8 +2,18 @@
 import Navbar from "../Navbar/Navbar";
 import Sidebar from "../Sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Loading from "../LoadingSpinner";
 
 const Layout = ({ setIsAuthenticated }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1000); 
+  }, []);
+
+  if (loading) return <Loading />; 
+
   return (
     <div className="flex">
       <Sidebar setIsAuthenticated={setIsAuthenticated} />

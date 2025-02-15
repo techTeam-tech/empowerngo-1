@@ -1,31 +1,42 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useState, useEffect } from "react";
 import Layout from "../src/components/Layout/Layout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SignUp from "./pages/signUp/SignUp";
 import SignIn from "./pages/signIn/SignIn";
-import AddStaff from "./components/Manage Staff/AddStaff";
 import AddUpdateDonor from "./components/Manage Donor/AddDonor";
 import SearchDonor from "./components/Manage Donor/SearchDonor";
-import AddNgo from "./components/Manage Ngo/ManageNgo";
 import ProjectAndPurpose from "./components/ManageProject/AddProject";
 import Managestaff from "./components/Manage Staff/Managestaff";
 import { ROLES } from "../src/utils/constants";
+import Manage from "./components/Manage Ngo/Manage";
+import Loading from "./components/LoadingSpinner";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const userData = localStorage.getItem("user");
 
-    if (token && userData) {
-      const parsedUser = JSON.parse(userData);
-      setIsAuthenticated(true);
-      setUserRole(parsedUser?.ROLE_CODE || ROLES.NGO_CA);
-    }
+    setTimeout(() => {
+      if (token && userData) {
+        const parsedUser = JSON.parse(userData);
+        setIsAuthenticated(true);
+        setUserRole(parsedUser?.ROLE_CODE || ROLES.NGO_CA);
+      }
+      setLoading(false);
+    }, 1000); // Simulating a delay for loading
   }, []);
+
+  if (loading) return <Loading />; // Show loading component while authentication is being checked
 
   const ProtectedRoute = ({ children, allowedRoles }) => {
     if (!isAuthenticated) {
@@ -71,7 +82,9 @@ function App() {
           <Route
             path="addstaff"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}>
+              <ProtectedRoute
+                allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}
+              >
                 <Managestaff />
               </ProtectedRoute>
             }
@@ -80,15 +93,16 @@ function App() {
             path="registerNgo"
             element={
               <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN]}>
-                <AddNgo />
+                <Manage />
               </ProtectedRoute>
             }
           />
-
           <Route
             path="addproject"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}>
+              <ProtectedRoute
+                allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}
+              >
                 <ProjectAndPurpose />
               </ProtectedRoute>
             }
@@ -114,7 +128,9 @@ function App() {
           <Route
             path="/manageUser"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN,ROLES.SUPER_ADMIN]}>
+              <ProtectedRoute
+                allowedRoles={[ROLES.NGO_ADMIN, ROLES.SUPER_ADMIN]}
+              >
                 <Managestaff />
               </ProtectedRoute>
             }
@@ -122,7 +138,12 @@ function App() {
         </Route>
 
         {/* Catch-All Redirect */}
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} replace />} />
+        <Route
+          path="*"
+          element={
+            <Navigate to={isAuthenticated ? "/dashboard" : "/signin"} replace />
+          }
+        />
       </Routes>
     </Router>
   );

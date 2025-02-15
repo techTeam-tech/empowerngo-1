@@ -47,7 +47,7 @@ const AddStaff = ({ onAddOrUpdateStaff, editStaff, setEditStaff }) => {
 
   return (
     <div className="bg-white p-8 shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800 text-center">{editStaff ? "Edit Staff" : "Add Staff"}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800 text-center">{editStaff ? "Edit User" : "Add User"}</h2>
       {loading && <Loading />}
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {renderInputField(register, errors, "Full Name", "name", { required: "Full name is required" }, "text", "Enter full name", FaUser)}
@@ -87,7 +87,7 @@ const AddStaff = ({ onAddOrUpdateStaff, editStaff, setEditStaff }) => {
         </div>
 
         <div className="md:col-span-2 flex justify-end">
-          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">{editStaff ? "Update Staff" : "Add Staff"}</button>
+          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">{editStaff ? "Update User" : "Add User"}</button>
         </div>
       </form>
     </div>

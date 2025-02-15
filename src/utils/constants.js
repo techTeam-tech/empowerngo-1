@@ -52,7 +52,7 @@ export const menuItems = [
     title: "Manage Donations",
     icon: "CurrencyDollarIcon",
     route: "/manageUSer",
-    roles: [1, 2],
+    roles: [1, 2, 4],
   },
   {
     title: "Manage NGOs",

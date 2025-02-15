@@ -11,6 +11,7 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { roleColors, roleNames, roleShortForms, menuItems } from "../../utils/constants";
+import Loading from "../LoadingSpinner";
 import "./style.css";
 
 const iconComponents = {
