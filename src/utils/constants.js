@@ -39,7 +39,8 @@ export const roleColors = {
     {
       title: "Manage User",
       icon: "UsersIcon",
-      route: "/addstaff",
+      route: "manageUser",
+      roles: [1,2], 
       roles: [1,2], 
     },
     {
@@ -47,10 +48,13 @@ export const roleColors = {
       icon: "DocumentTextIcon",
       route: "/adddonor",
       roles: [1,2], 
+      roles: [1,2], 
     },
     {
       title: "Manage Donations",
       icon: "CurrencyDollarIcon",
+      route: "manageUser",
+      roles: [1,2], 
       route: "manageUser",
       roles: [1,2], 
     },
@@ -63,13 +67,10 @@ export const roleColors = {
     {
       title: "Manage Projects",
       icon: "DocumentTextIcon",
-<<<<<<< Updated upstream
       route: "addproject",
       roles: [2, 3], 
-=======
       route: "/addproject",
       roles: [1,2, 3], 
->>>>>>> Stashed changes
     },
   ];
    
