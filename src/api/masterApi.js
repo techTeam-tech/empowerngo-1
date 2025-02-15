@@ -1,5 +1,6 @@
 import api from "./api";
 
+//method wto invoke userSignIn 
 export const loginUser = async (credentials) => {
   try {
     const response = await api.post("/userSignIn", credentials);
@@ -13,26 +14,60 @@ export const loginUser = async (credentials) => {
   }
 };
 
-
-
-// export const registerNgo = async (formData) => {
-//   try {
-//     const response = await api.post("/manageNGO", { ...formData, reqType: "s" });
-//     return response.data;
-//   } catch (error) {
-//     throw error.response?.data || error.message;
-//   }
-// };
-
+//method wto invoke userSignIn /manageNGO 
 export const registerNgo = async (formData) => {
   try {
-    //formData.append("reqType", "s"); // Required field
-    console.log("formData - ",formData);
+    console.log("formData - ", formData);
     const response = await api.post("/manageNGO", formData, {
-     // headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log("response - ",response.data);
+    console.log("response - ", response.data);
     return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+//method wto invoke userSignIn /manageProject 
+export const manageProject = async (formData, reqType) => {
+  try {
+    formData.append("reqType", reqType); // Set the operation type
+    console.log("manageProject API - Request:", formData);
+
+    const response = await api.post("/manageProject", formData);
+    console.log("manageProject API - Response:", response.data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+//method wto invoke userSignIn /managePurpose 
+export const managePurpose = async (formData, reqType) => {
+  try {
+    formData.append("reqType", reqType); // Set the operation type
+    console.log("managePurpose API - Request:", formData);
+
+    const response = await api.post("/managePurpose", formData);
+    console.log("managePurpose API - Response:", response.data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getProjects = async (ngoID) => {
+  try {
+    const response = await api.post("/manageProject", { reqType: "g", ngoID });
+    return response.data.payload || [];
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getPurposes = async (ngoID, projectID) => {
+  try {
+    const response = await api.post("/managePurpose", { reqType: "g", ngoID, projectID });
+    return response.data.payload || [];
   } catch (error) {
     throw error.response?.data || error.message;
   }
