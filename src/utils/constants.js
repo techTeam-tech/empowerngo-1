@@ -1,6 +1,7 @@
 export const CLOUDINARY_CLOUD_NAME = "djb14fucx"; 
  export const CLOUDINARY_UPLOAD_PRESET = "empngo-upload";
 
+
 export const roleColors = {
     1: "bg-red-600", // Super Admin
     2: "bg-green-600", // NGO Admin
@@ -70,6 +71,7 @@ export const roleColors = {
       route: "addproject",
       roles: [2, 3], 
       route: "/addproject",
+      roles: [1,2, 3], 
       roles: [1,2, 3], 
     },
   ];
