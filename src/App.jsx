@@ -1,10 +1,5 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
 import Layout from "../src/components/Layout/Layout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SignUp from "./pages/signUp/SignUp";
@@ -15,13 +10,7 @@ import SearchDonor from "./components/Manage Donor/SearchDonor";
 import AddNgo from "./components/Manage Ngo/ManageNgo";
 import ProjectAndPurpose from "./components/ManageProject/AddProject";
 import Managestaff from "./components/Manage Staff/Managestaff";
-
-const ROLES = {
-  SUPER_ADMIN: 1,
-  NGO_ADMIN: 2,
-  NGO_STAFF: 3,
-  NGO_CA: 4,
-};
+import { ROLES } from "../src/utils/constants";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,22 +22,18 @@ function App() {
 
     if (token && userData) {
       const parsedUser = JSON.parse(userData);
-      const roleCode = parsedUser?.ROLE_CODE ?? ROLES.NGO_CA;
-
       setIsAuthenticated(true);
-      setUserRole(roleCode);
+      setUserRole(parsedUser?.ROLE_CODE || ROLES.NGO_CA);
     }
   }, []);
+
   const ProtectedRoute = ({ children, allowedRoles }) => {
     if (!isAuthenticated) {
-      return <Navigate to="/signin" />;
+      return <Navigate to="/signin" replace />;
     }
-
-    // If user's role is not in allowedRoles, redirect to the dashboard
     if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/dashboard" />;
+      return <Navigate to="/dashboard" replace />;
     }
-
     return children;
   };
 
@@ -56,45 +41,43 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="signup" element={<SignUp />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route
           path="/signin"
           element={
             !isAuthenticated ? (
               <SignIn setIsAuthenticated={setIsAuthenticated} />
             ) : (
-              <Navigate to="/dashboard" />
+              <Navigate to="/dashboard" replace />
             )
           }
         />
 
-        {/* Protected Routes */}
+        {/* Protected Routes inside Layout */}
         <Route
           path="/"
           element={
             isAuthenticated ? (
               <Layout setIsAuthenticated={setIsAuthenticated} />
             ) : (
-              <Navigate to="/signin" />
+              <Navigate to="/signin" replace />
             )
           }
         >
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
 
-          {/* Super Admin Only Routes */}
+          {/* Super Admin Routes */}
           <Route
-            path="/addstaff"
+            path="addstaff"
             element={
-              <ProtectedRoute
-                allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}
-              >
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}>
                 <AddStaff />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/registerNgo"
+            path="registerNgo"
             element={
               <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN]}>
                 <AddNgo />
@@ -102,50 +85,43 @@ function App() {
             }
           />
           <Route
-            path="/addproject"
+            path="addproject"
             element={
-              <ProtectedRoute
-                allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}
-              >
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}>
                 <ProjectAndPurpose />
               </ProtectedRoute>
             }
           />
 
-          {/* Admin & Super Admin Routes */}
+          {/* Admin Routes */}
           <Route
-            path="/adddonor"
+            path="adddonor"
             element={
               <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN]}>
                 <AddUpdateDonor />
               </ProtectedRoute>
             }
           />
-
-          {/* Staff & Admin Access */}
           <Route
-            path="/searchDonor"
+            path="searchDonor"
             element={
               <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
                 <SearchDonor />
               </ProtectedRoute>
             }
           />
+          <Route
+            path="manageUser"
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
+                <Managestaff />
+              </ProtectedRoute>
+            }
+          />
         </Route>
-        <Route
-          path="/manageUser"
-          element={
-            <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
-              <Managestaff />
-            </ProtectedRoute>
-          }
-        />
 
-        {/* Redirect unknown routes */}
-        <Route
-          path="*"
-          element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />}
-        />
+        {/* Catch-All Redirect */}
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} replace />} />
       </Routes>
     </Router>
   );

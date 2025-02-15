@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   HomeIcon,
@@ -51,6 +51,11 @@ const Sidebar = ({ setIsAuthenticated }) => {
     navigate("/signin");
   }, [navigate, setIsAuthenticated]);
 
+  // Filter menu items based on role from constants
+  const filteredMenuItems = menuItems.filter((item) =>
+    item.roles.includes(user.ROLE_CODE)
+  );
+
   return (
     <>
       <button
@@ -87,7 +92,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
         </div>
 
         <div className="flex-grow p-4 space-y-2 overflow-auto sidebar-content">
-          {menuItems.map((item, index) => {
+          {filteredMenuItems.map((item, index) => {
             const IconComponent = iconComponents[item.icon];
             return (
               <button

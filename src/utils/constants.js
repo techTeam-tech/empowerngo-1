@@ -18,37 +18,51 @@ export const roleColors = {
     3: "NS",
     4: "CA",
   };
+
+ export const ROLES = {
+    SUPER_ADMIN: 1,
+    NGO_ADMIN: 2,
+    NGO_STAFF: 3,
+    NGO_CA: 4,
+  };
   
   export const menuItems = [
     {
       title: "Dashboard",
       icon: "HomeIcon",
       route: "/dashboard",
+      roles: [1, 2, 3], 
     },
     {
       title: "Manage User",
       icon: "UsersIcon",
-      route: "/manageUser",
+      route: "/addstaff",
+      roles: [2], 
     },
     {
       title: "Manage Donor",
       icon: "DocumentTextIcon",
       route: "/adddonor",
+      roles: [2], 
     },
     {
       title: "Manage Donations",
       icon: "CurrencyDollarIcon",
       route: "/finance/donations",
+      roles: [2], 
     },
     {
       title: "Manage NGOs",
       icon: "ChartBarIcon",
       route: "/registerNgo",
+      roles: [1], 
     },
     {
       title: "Manage Projects",
       icon: "DocumentTextIcon",
       route: "/addproject",
+      roles: [2, 3], 
     },
   ];
-  
+   
+  export default ROLES;
