@@ -59,6 +59,7 @@ export const getProjects = async (ngoID) => {
   try {
     const response = await api.post("/manageProject", { reqType: "g", ngoID });
     return response.data.payload || [];
+    console.log('responce projects - ', response)
   } catch (error) {
     throw error.response?.data || error.message;
   }

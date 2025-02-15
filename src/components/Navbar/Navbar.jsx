@@ -22,7 +22,7 @@ const Navbar = ({ setIsAuthenticated }) => {
     if (user) {
       const roleCode = user.ROLE_CODE;
       if (roleCode === 1) {
-        setUserName(user.FULL_NAME);
+        setUserName([user.FNAME,' ', user.LNAME]);
         setUserRole("Super Admin");
       } else if ([2, 3, 4].includes(roleCode)) {
         setUserName(user.NGO_NAME || "NGO");

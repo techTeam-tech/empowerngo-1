@@ -54,13 +54,13 @@ export const roleColors = {
     {
       title: "Manage NGOs",
       icon: "ChartBarIcon",
-      route: "/registerNgo",
+      route: "registerNgo",
       roles: [1], 
     },
     {
       title: "Manage Projects",
       icon: "DocumentTextIcon",
-      route: "/addproject",
+      route: "addproject",
       roles: [2, 3], 
     },
   ];

@@ -27,7 +27,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
 
   const user = useMemo(() => {
     const storedUser = JSON.parse(localStorage.getItem("user")) || {
-      FULL_NAME: "Admin User",
+      FNAME: "Admin User",
       NGO_NAME: "Default NGO",
       ROLE_CODE: 1,
     };
@@ -85,7 +85,7 @@ const Sidebar = ({ setIsAuthenticated }) => {
             {user.shortForm}
           </div>
           <div>
-            <p className="text-lg font-semibold">{user.FULL_NAME}</p>
+            <p className="text-lg font-semibold">{[user.FNAME,' ', user.LNAME]}</p>
             <p className="text-sm text-blue-300">
               {roleNames[user.ROLE_CODE] || "Unknown Role"}
             </p>
