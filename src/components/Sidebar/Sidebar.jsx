@@ -51,8 +51,6 @@ const Sidebar = ({ setIsAuthenticated }) => {
     navigate("/signin");
   }, [navigate, setIsAuthenticated]);
 
-  // Filter menu items based on role from constants
-  //tejas
   const filteredMenuItems = menuItems.filter((item) =>
     item.roles.includes(user.ROLE_CODE)
   );

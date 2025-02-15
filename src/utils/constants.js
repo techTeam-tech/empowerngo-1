@@ -1,3 +1,6 @@
+export const CLOUDINARY_CLOUD_NAME = "djb14fucx"; 
+ export const CLOUDINARY_UPLOAD_PRESET = "empngo-upload";
+
 export const roleColors = {
     1: "bg-red-600", // Super Admin
     2: "bg-green-600", // NGO Admin
@@ -37,19 +40,19 @@ export const roleColors = {
       title: "Manage User",
       icon: "UsersIcon",
       route: "/addstaff",
-      roles: [2], 
+      roles: [1,2], 
     },
     {
       title: "Manage Donor",
       icon: "DocumentTextIcon",
       route: "/adddonor",
-      roles: [2], 
+      roles: [1,2], 
     },
     {
       title: "Manage Donations",
       icon: "CurrencyDollarIcon",
-      route: "/finance/donations",
-      roles: [2], 
+      route: "manageUser",
+      roles: [1,2], 
     },
     {
       title: "Manage NGOs",
@@ -60,8 +63,13 @@ export const roleColors = {
     {
       title: "Manage Projects",
       icon: "DocumentTextIcon",
+<<<<<<< Updated upstream
       route: "addproject",
       roles: [2, 3], 
+=======
+      route: "/addproject",
+      roles: [1,2, 3], 
+>>>>>>> Stashed changes
     },
   ];
    

@@ -114,7 +114,7 @@ function App() {
           <Route
             path="manageUser"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
+              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF,ROLES.SUPER_ADMIN]}>
                 <Managestaff />
               </ProtectedRoute>
             }
