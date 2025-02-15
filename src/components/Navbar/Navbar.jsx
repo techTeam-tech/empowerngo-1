@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BellIcon,
   UserCircleIcon,
@@ -11,13 +11,33 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ setIsAuthenticated }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user")); // Retrieve user object
+
+    if (user) {
+      const roleCode = user.ROLE_CODE;
+      if (roleCode === 1) {
+        setUserName(user.FULL_NAME);
+        setUserRole("Super Admin");
+      } else if ([2, 3, 4].includes(roleCode)) {
+        setUserName(user.NGO_NAME || "NGO");
+        setUserRole(
+          roleCode === 2 ? "NGO Admin" : roleCode === 3 ? "NGO Staff" : "NGO CA"
+        );
+      }
+    }
+  }, []);
+
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
-    navigate('/signin');
+    navigate("/signin");
   };
 
   return (
@@ -43,8 +63,8 @@ const Navbar = ({ setIsAuthenticated }) => {
           >
             <UserCircleIcon className="w-10 h-10 lg:w-12 lg:h-12 text-gray-300" />
             <div className="text-left hidden lg:block">
-              <p className="text-base lg:text-lg font-semibold">Admin User</p>
-              <p className="text-sm lg:text-base text-blue-300">Super Admin</p>
+              <p className="text-base lg:text-lg font-semibold">{userName}</p>
+              <p className="text-sm lg:text-base text-blue-300">{userRole}</p>
             </div>
           </button>
           {dropdownOpen && (
@@ -55,7 +75,10 @@ const Navbar = ({ setIsAuthenticated }) => {
               <button className="w-full flex items-center px-5 py-4 lg:py-5 hover:bg-blue-700 transition">
                 <KeyIcon className="w-6 h-6 lg:w-7 lg:h-7 mr-3" /> Reset Password
               </button>
-              <button className="w-full flex items-center px-5 py-4 lg:py-5 text-red-500 hover:bg-red-700 transition" onClick={handleLogout}>
+              <button
+                className="w-full flex items-center px-5 py-4 lg:py-5 text-red-500 hover:bg-red-700 transition"
+                onClick={handleLogout}
+              >
                 <ArrowLeftOnRectangleIcon className="w-6 h-6 lg:w-7 lg:h-7 mr-3" /> Logout
               </button>
             </div>

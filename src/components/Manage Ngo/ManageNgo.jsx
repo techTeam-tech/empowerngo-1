@@ -34,7 +34,7 @@ const RegisterNGO = () => {
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
     try {
-      console.log(`Uploading ${fieldName} to Cloudinary...`); // ✅ Log when upload starts
+      console.log(`Uploading ${fieldName} to Cloudinary...`); 
 
       const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
         method: "POST",
@@ -42,11 +42,11 @@ const RegisterNGO = () => {
       });
 
       const data = await response.json();
-      console.log(`Cloudinary Response for ${fieldName}:`, data); // ✅ Log full response
+      console.log(`Cloudinary Response for ${fieldName}:`, data); 
 
       if (data.secure_url) {
-        console.log(`Uploaded ${fieldName} URL:`, data.secure_url); // ✅ Log secure URL
-        setValue(fieldName, data.secure_url); // ✅ Save in form
+        console.log(`Uploaded ${fieldName} URL:`, data.secure_url); 
+        setValue(fieldName, data.secure_url); 
         toast.success(`${fieldName} uploaded successfully!`);
         return data.secure_url;
       } else {

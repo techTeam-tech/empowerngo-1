@@ -9,7 +9,7 @@ const Layout = ({ setIsAuthenticated }) => {
       <Sidebar setIsAuthenticated={setIsAuthenticated} />
       <div className="flex-grow ml-72">
         <Navbar setIsAuthenticated={setIsAuthenticated} />
-        <div className="p-4 mt-20 lg:mt-24 bg-gray-100">
+        <div className="p-4 mt-20 lg:mt-24 bg-gray-300">
           <Outlet />
         </div>
       </div>

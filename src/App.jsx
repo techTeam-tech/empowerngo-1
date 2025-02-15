@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import Layout from "../src/components/Layout/Layout";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -9,8 +14,8 @@ import AddUpdateDonor from "./components/Manage Donor/AddDonor";
 import SearchDonor from "./components/Manage Donor/SearchDonor";
 import AddNgo from "./components/Manage Ngo/ManageNgo";
 import ProjectAndPurpose from "./components/ManageProject/AddProject";
+import Managestaff from "./components/Manage Staff/Managestaff";
 
-// Define role codes
 const ROLES = {
   SUPER_ADMIN: 1,
   NGO_ADMIN: 2,
@@ -28,19 +33,22 @@ function App() {
 
     if (token && userData) {
       const parsedUser = JSON.parse(userData);
+      const roleCode = parsedUser?.ROLE_CODE ?? ROLES.NGO_CA;
+
       setIsAuthenticated(true);
-      setUserRole(parsedUser.ROLE_CODE); // Extract ROLE_CODE
+      setUserRole(roleCode);
     }
   }, []);
-
-  // Role-based route protection function
   const ProtectedRoute = ({ children, allowedRoles }) => {
     if (!isAuthenticated) {
       return <Navigate to="/signin" />;
     }
+
+    // If user's role is not in allowedRoles, redirect to the dashboard
     if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/dashboard" />; // Redirect unauthorized users
+      return <Navigate to="/dashboard" />;
     }
+
     return children;
   };
 
@@ -48,14 +56,28 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        
         <Route path="signup" element={<SignUp />} />
-        <Route path="/signin" element={!isAuthenticated ? <SignIn setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/dashboard" />} />
+        <Route
+          path="/signin"
+          element={
+            !isAuthenticated ? (
+              <SignIn setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
+        />
 
         {/* Protected Routes */}
         <Route
           path="/"
-          element={isAuthenticated ? <Layout setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/signin" />}
+          element={
+            isAuthenticated ? (
+              <Layout setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/signin" />
+            )
+          }
         >
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
@@ -64,7 +86,9 @@ function App() {
           <Route
             path="/addstaff"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN,ROLES.NGO_ADMIN]}>
+              <ProtectedRoute
+                allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}
+              >
                 <AddStaff />
               </ProtectedRoute>
             }
@@ -77,11 +101,12 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/addproject"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN,ROLES.NGO_ADMIN]}>
+              <ProtectedRoute
+                allowedRoles={[ROLES.SUPER_ADMIN, ROLES.NGO_ADMIN]}
+              >
                 <ProjectAndPurpose />
               </ProtectedRoute>
             }
@@ -107,9 +132,20 @@ function App() {
             }
           />
         </Route>
+        <Route
+          path="/manageUser"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
+              <Managestaff />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Redirect unknown routes */}
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />} />
+        <Route
+          path="*"
+          element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />}
+        />
       </Routes>
     </Router>
   );
