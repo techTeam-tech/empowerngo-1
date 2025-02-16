@@ -102,3 +102,16 @@ export const getPurposes = async (ngoID, projectID) => {
     throw error.response?.data || error.message;
   }
 };
+
+
+export const registerUser = async (formData) => {
+  try {
+    console.log("formData - ", formData);
+    const response = await api.post("/manageUserRegistration", formData, {
+    });
+    console.log("response - ", response.data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
