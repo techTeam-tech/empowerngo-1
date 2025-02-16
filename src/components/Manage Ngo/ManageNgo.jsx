@@ -14,7 +14,7 @@ const RegisterNGO = () => {
     formState: { errors },
     reset,
     watch,
-    setValue,
+    setValue
   } = useForm();
 
   const [countries, setCountries] = useState([]);
@@ -23,7 +23,6 @@ const RegisterNGO = () => {
 
   const selectedLogo = watch("logoURL");
   const selectedSignature = watch("signatureURL");
-
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
       .then((res) => res.json())
@@ -102,7 +101,7 @@ const RegisterNGO = () => {
             register,
             errors,
             "Registration Number",
-            "registrationNumber ",
+            "ngoRegNumber",
             { required: "registration number is required" },
             "text",
             "Enter registration number"
@@ -123,9 +122,111 @@ const RegisterNGO = () => {
           {renderInputField(
             register,
             errors,
+            "Ngo City",
+            "ngoCity",
+            { required: "City is required" },
+            "text",
+            "Enter City"
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
+            "State",
+            "ngoState",
+            { required: "State is required" },
+            "text",
+            "Enter State"
+          )}
+        </div>
+        <div className="col-span-1">
+          <label className="block text-gray-700 font-medium mb-2">
+            Country
+          </label>
+          <select
+            {...register("ngoCountry", {
+              required: "Country is required"
+            })}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          >
+            <option value="">Select Country</option>
+            {countries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+          {errors.country && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.country.message}
+            </p>
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
+            "Pin Code",
+            "ngoPinCode",
+            {
+              required: "Pin Code is required",
+              pattern: {
+                value: /^[0-9]{6}$/,
+                message: "Pin Code should be 6 digit number"
+              }
+            },
+            "text",
+            "Enter Pin Code"
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
+            "Email",
+            "ngoEmail",
+            {
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: "Enter a valid email"
+              }
+            },
+            "email",
+            "Enter your email"
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
+            "Contact",
+            "ngoContact",
+            {
+              required: "Contact is required",
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: "Enter a valid contact number"
+              }
+            },
+            "text",
+            "Enter Contact"
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
             "Authorized Person",
             "authorizedPerson",
-            { required: "Authorized person is required" },
+            {
+              required: "Authorized person is required",
+              pattern: {
+                value: /^[a-zA-Z ]+$/,
+                message: "Enter a valid name"
+              }
+            },
             "text",
             "Enter Authorized Person"
           )}
@@ -154,20 +255,33 @@ const RegisterNGO = () => {
           {renderInputField(
             register,
             errors,
-            "PAN Number",
-            "panNumber",
-            { required: "PAN Number is required" },
+            "Pan Number",
+            "ngoPAN",
+            {
+              required: "Pan Number is required",
+              pattern: {
+                value: "/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/",
+                message: "Invalid PAN format (e.g., ABCDE1234F)"
+              }
+            },
             "text",
-            "Enter PAN Number"
+            "Enter Pan Number"
           )}
         </div>
+
         <div>
           {renderInputField(
             register,
             errors,
             "Contact Person",
             "contactPerson",
-            { required: "Contact person is required" },
+            {
+              required: "Contact person is required",
+              pattern: {
+                vaue: "/^[0-9]{10}$/,",
+                message: "Invalid contact number (e.g., 1234567890)"
+              }
+            },
             "text",
             "Enter Contact Person"
           )}
@@ -177,7 +291,7 @@ const RegisterNGO = () => {
             register,
             errors,
             "12A Number",
-            "twelveANumber",
+            "ngo12ANumber",
             { required: "12A Number is required" },
             "text",
             "Enter 12A Number"
@@ -187,54 +301,31 @@ const RegisterNGO = () => {
           {renderInputField(
             register,
             errors,
+            "Ngo Csr",
+            "ngoCSRNumber",
+            "text",
+            "Enter Ngo CSR Number"
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
+            "Ngo FCRA",
+            "ngoFCRANumber",
+            "text",
+            "Enter Ngo FCRA Number"
+          )}
+        </div>
+        <div>
+          {renderInputField(
+            register,
+            errors,
             "80G Number",
-            "eightyGNumber",
+            "ngo80GNumber",
             { required: "80G Number is required" },
             "text",
             "Enter 80G Number"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "City",
-            "city",
-            { required: "City is required" },
-            "text",
-            "Enter City"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "State",
-            "state",
-            { required: "State is required" },
-            "text",
-            "Enter State"
-          )}
-        </div>
-        <div className="col-span-2">
-          <label className="block text-gray-700 font-medium mb-2">
-            Country
-          </label>
-          <select
-            {...register("country", { required: "Country is required" })}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          >
-            <option value="">Select Country</option>
-            {countries.map((country) => (
-              <option key={country} value={country}>
-                {country}
-              </option>
-            ))}
-          </select>
-          {errors.country && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.country.message}
-            </p>
           )}
         </div>
         <div className="col-span-2 flex justify-end">
