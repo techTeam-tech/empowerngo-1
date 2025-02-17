@@ -115,3 +115,36 @@ export const registerUser = async (formData) => {
     throw error.response?.data || error.message;
   }
 };
+
+//method to get registered user list
+export const retrieveUserList = async (reqType) => {
+  try {
+    const requestData = { reqType };
+
+    //   if (reqType === "list") {
+    //   requestData.ngoID = ngoId;  // Ensure the key matches the backend requirement
+    // }
+
+    const response = await api.post("/retrieveUsersInfo", requestData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+
+// method to get registered user info by userID
+export const retrieveUserInfo = async (reqType, userID) => {
+  try {
+    const requestData = { reqType };
+
+      if (reqType === "info") {
+      requestData.userID = userID;  // Ensure the key matches the backend requirement
+    }
+
+    const response = await api.post("/retrieveUsersInfo", requestData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
