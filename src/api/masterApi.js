@@ -27,32 +27,36 @@ export const registerNgo = async (formData) => {
 
 export const retrieveNGOList = async (reqType, ngoId = null) => {
   try {
-    const requestData = { reqType };
-
-    // If reqType is "info", add ngoID to the request
-    if (reqType === "info" && ngoId) {
-      requestData.ngoID = ngoId;  // Ensure the key matches the backend requirement
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      throw new Error("Missing authentication token");
     }
+    if (!["list", "info"].includes(reqType)) {
+      throw new Error("\"reqType\" must be one of [list, info]");
+    }
+    const requestData = { reqType };
+    if (reqType === "info" && !ngoId) {
+      throw new Error("ngoID is required when reqType is 'info'");
+    }
+    if (ngoId) {
+      requestData.ngoID = ngoId;
+    }
+    console.log("Sending Request Data:", requestData);
+    console.log("Token Sent:", token);
+    const response = await api.post("/retrieveNGOInfo", requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-    const response = await api.post("/retrieveNGOInfo", requestData);
     return response.data;
   } catch (error) {
+    console.error("retrieveNGOList API Error:", error);
     throw error.response?.data || error.message;
   }
 };
 
 
-
-// export const retrieveNGOInfo = async (reqType) => {
-//   try {
-//     const response = await api.post("/retrieveNGOInfo", {reqType});
-//     return response.data;
-//   } catch (error) {
-//     throw error.response?.data || error.message;
-//   }
-// };
-
-//method wto invoke userSignIn /manageProject
 export const manageProject = async (formData, reqType) => {
   try {
     formData.append("reqType", reqType);
@@ -66,7 +70,6 @@ export const manageProject = async (formData, reqType) => {
   }
 };
 
-//method wto invoke userSignIn /managePurpose
 export const managePurpose = async (formData, reqType) => {
   try {
     formData.append("reqType", reqType);
@@ -103,7 +106,6 @@ export const getPurposes = async (ngoID, projectID) => {
   }
 };
 
-
 export const registerUser = async (formData) => {
   try {
     console.log("formData - ", formData);
@@ -115,3 +117,66 @@ export const registerUser = async (formData) => {
     throw error.response?.data || error.message;
   }
 };
+
+//method to get registered user list
+export const retrieveUserList = async (reqType) => {
+  try {
+    const requestData = { reqType };
+
+    //   if (reqType === "list") {
+    //   requestData.ngoID = ngoId;  // Ensure the key matches the backend requirement
+    // }
+
+    const response = await api.post("/retrieveUsersInfo", requestData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const handleStaffRequest = async (formData) => {
+  try {
+    const { reqType } = formData;
+
+    if (!["s", "u"].includes(reqType)) {
+      throw new Error("Invalid reqType. Must be 's' for staff save or 'u' for staff update.");
+    }
+    if (reqType === "s") {
+      if (formData.roleCode === 1) {
+        if (formData.ngoId) {
+          throw new Error("NGO ID should not be provided for Super Admin role.");
+        }
+      } else if ([2, 3, 4].includes(formData.roleCode)) {
+        if (!formData.ngoId) {
+          throw new Error("NGO ID is required for roles 2, 3, or 4.");
+        }
+      } else {
+        throw new Error("Invalid role code.");
+      }
+      const response = await api.post("/manageUserRegistration", formData);
+      return response.data;
+    }
+    if (reqType === "u") {
+      if ([2, 3, 4].includes(formData.roleCode)) {
+        if (!formData.ngoId) {
+          throw new Error("NGO ID is required for updating this role.");
+        }
+      } else if (formData.roleCode === 1) {
+        if (formData.ngoId) {
+          throw new Error("NGO ID should not be provided for Super Admin role update.");
+        }
+      } else {
+        throw new Error("Invalid role code.");
+      }
+      const response = await api.post("/manageUserRegistration", formData);
+      return response.data;
+    }
+
+    throw new Error("Invalid request type.");
+  } catch (error) {
+    console.error("Error handling staff request:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+

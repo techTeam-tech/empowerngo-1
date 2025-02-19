@@ -9,8 +9,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { retrieveNGOList } from "../../api/masterApi";
-import { registerNgo } from "../../api/masterApi";
+import { retrieveNGOList, registerNgo } from "../../api/masterApi";
 
 const EditNGOForm = ({ open, onClose, ngoId }) => {
   const [ngoDetails, setNgoDetails] = useState({});
@@ -24,9 +23,30 @@ const EditNGOForm = ({ open, onClose, ngoId }) => {
       retrieveNGOList("info", ngoId)
         .then((response) => {
           if (response?.payload) {
-            setNgoDetails(response.payload);
-            setLogoPreview(response.payload.LOGO_URL);
-            setSignaturePreview(response.payload.SIGNATURE_URL);
+            const data = response.payload;
+            setNgoDetails({
+              NGO_ID: data?.NGO_ID || "",
+              NGO_NAME: data?.NGO_NAME || "",
+              NGO_ADDRESS: data?.NGO_ADDRESS || "",
+              NGO_CITY: data?.NGO_CITY || "",
+              NGO_STATE: data?.NGO_STATE || "",
+              NGO_COUNTRY: data?.NGO_COUNTRY || "",
+              NGO_PINCODE: data?.NGO_PINCODE || "",
+              NGO_EMAIL: data?.NGO_EMAIL || "",
+              NGO_CONTACT: data?.NGO_CONTACT || "",
+              AUTHORIZED_PERSON: data?.AUTHORIZED_PERSON || "",
+              NGO_80G_NUMBER: data?.NGO_80G_NUMBER || "",
+              NGO_12A_NUMBER: data?.NGO_12A_NUMBER || "",
+              NGO_CSR_NUMBER: data?.NGO_CSR_NUMBER || "",
+              NGO_FCRA_NUMBER: data?.NGO_FCRA_NUMBER || "",
+              NGO_PAN: data?.NGO_PAN || "",
+              CONTACT_PERSON: data?.CONTACT_PERSON || "",
+              NGO_REG_NUMBER: data?.NGO_REG_NUMBER || "",
+              LOGO_URL: data?.LOGO_URL || null,
+              SIGNATURE_URL: data?.SIGNATURE_URL || null,
+            });
+            setLogoPreview(data?.LOGO_URL);
+            setSignaturePreview(data?.SIGNATURE_URL);
           }
         })
         .catch((error) => console.error("Error fetching NGO details:", error))
@@ -35,13 +55,13 @@ const EditNGOForm = ({ open, onClose, ngoId }) => {
   }, [ngoId]);
 
   const handleChange = (e) => {
-    setNgoDetails({ ...ngoDetails, [e.target.name]: e.target.value });
+    setNgoDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleImageChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
-      setNgoDetails({ ...ngoDetails, [field]: file });
+      setNgoDetails((prev) => ({ ...prev, [field]: file }));
       const reader = new FileReader();
       reader.onload = () => {
         if (field === "LOGO_URL") {
@@ -55,124 +75,141 @@ const EditNGOForm = ({ open, onClose, ngoId }) => {
   };
 
   const handleSave = async () => {
+    if (!ngoDetails.NGO_NAME || ngoDetails.NGO_NAME.trim() === "") {
+      alert("Error: NGO Name is required.");
+      return;
+    }
+
     try {
       const formData = new FormData();
-  
-      // Check if ngoName exists before sending the request
-      if (!ngoDetails.ngoName || ngoDetails.ngoName.trim() === "") {
-        alert("Error: NGO Name is required.");
-        return;
-      }
-  
-      // Append all NGO details
       Object.keys(ngoDetails).forEach((key) => {
         if (ngoDetails[key]) {
           formData.append(key, ngoDetails[key]);
         }
       });
-  
-      // Append `reqType` (Ensure correct case)
       formData.append("reqType", "s");
-  
-      console.log("Saving NGO details:", Object.fromEntries(formData.entries()));
-  
+
       const response = await registerNgo(formData);
-      console.log("Save response:", response);
-  
       if (response?.status === "FAILURE") {
         alert(`Error: ${response.message}`);
       } else {
         alert("NGO details saved successfully!");
-        onClose(); // Close the dialog after saving
+        onClose();
       }
     } catch (error) {
       console.error("Error saving NGO details:", error);
       alert("Failed to save NGO details.");
     }
   };
-  
-  
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Edit NGO Details</DialogTitle>
       <DialogContent>
         {loading ? (
-          <p>Loading...</p>
+          <Typography>Loading...</Typography>
         ) : (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-            <TextField label="NGO Name" name="ngoName" value={ngoDetails.NGO_NAME || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Address" name="ngoAddress" value={ngoDetails.NGO_ADDRESS || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="City" name="ngoCity" value={ngoDetails.NGO_CITY || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="State" name="ngoState" value={ngoDetails.NGO_STATE || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Country" name="ngoCountry" value={ngoDetails.NGO_COUNTRY || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Pincode" name="ngoPinCode" value={ngoDetails.NGO_PINCODE || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Email" name="ngoEmail" value={ngoDetails.NGO_EMAIL || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Contact" name="ngoContact" value={ngoDetails.NGO_CONTACT || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Authorized Person" name="authorizedPerson" value={ngoDetails.AUTHORIZED_PERSON || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="80G Number" name="ngo80GNumber" value={ngoDetails.NGO_80G_NUMBER || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="12A Number" name="ngo12ANumber" value={ngoDetails.NGO_12A_NUMBER || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="CSR Number" name="ngoCSRNumber" value={ngoDetails.NGO_CSR_NUMBER || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="FCRA Number" name="ngoFCRANumber" value={ngoDetails.NGO_FCRA_NUMBER || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="PAN" name="ngoPAN" value={ngoDetails.NGO_PAN || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Contact Person" name="contactPerson" value={ngoDetails.CONTACT_PERSON || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField label="Registration Number" name="ngoRegNumber" value={ngoDetails.NGO_REG_NUMBER || ""} onChange={handleChange} fullWidth margin="dense" />
-            </Grid>
+          <Grid container spacing={3}>
+            {/* Fields */}
+            {[
+              { label: "NGO Name", name: "NGO_NAME" },
+              { label: "Address", name: "NGO_ADDRESS" },
+              { label: "City", name: "NGO_CITY" },
+              { label: "State", name: "NGO_STATE" },
+              { label: "Country", name: "NGO_COUNTRY" },
+              { label: "Pincode", name: "NGO_PINCODE" },
+              { label: "Email", name: "NGO_EMAIL" },
+              { label: "Contact", name: "NGO_CONTACT" },
+              { label: "Authorized Person", name: "AUTHORIZED_PERSON" },
+              { label: "80G Number", name: "NGO_80G_NUMBER" },
+              { label: "12A Number", name: "NGO_12A_NUMBER" },
+              { label: "CSR Number", name: "NGO_CSR_NUMBER" },
+              { label: "FCRA Number", name: "NGO_FCRA_NUMBER" },
+              { label: "PAN", name: "NGO_PAN" },
+              { label: "Contact Person", name: "CONTACT_PERSON" },
+              { label: "Registration Number", name: "NGO_REG_NUMBER" },
+            ].map(({ label, name }) => (
+              <Grid item xs={12} md={6} key={name}>
+                <TextField
+                  label={label}
+                  name={name}
+                  value={ngoDetails[name] || ""}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="dense"
+                  variant="outlined"
+                  size="small"
+                />
+              </Grid>
+            ))}
 
-            <Grid item xs={6}>
-              <Typography variant="subtitle1">NGO Logo</Typography>
-              {logoPreview && <img src={logoPreview} alt="logoURL" style={{ width: "100%", maxHeight: 150, objectFit: "contain", borderRadius: 5 }} />}
+            {/* NGO Logo */}
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle1" gutterBottom>
+                NGO Logo
+              </Typography>
+              {logoPreview && (
+                <img
+                  src={logoPreview}
+                  alt="logoURL"
+                  style={{
+                    width: "100%",
+                    maxHeight: 150,
+                    objectFit: "contain",
+                    borderRadius: 10,
+                    marginBottom: 10,
+                  }}
+                />
+              )}
               <Button variant="contained" component="label" fullWidth style={{ marginTop: 10 }}>
                 Update Logo
-                <input type="file"name="logoURL" hidden onChange={(e) => handleImageChange(e, "LOGO_URL")} />
+                <input
+                  type="file"
+                  name="LOGO_URL"
+                  hidden
+                  onChange={(e) => handleImageChange(e, "LOGO_URL")}
+                />
               </Button>
             </Grid>
 
-            <Grid item xs={6}>
-              <Typography variant="subtitle1">NGO Signature</Typography>
-              {signaturePreview && <img src={signaturePreview} alt="Signature" style={{ width: "100%", maxHeight: 150, objectFit: "contain", borderRadius: 5 }} />}
+            {/* NGO Signature */}
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle1" gutterBottom>
+                NGO Signature
+              </Typography>
+              {signaturePreview && (
+                <img
+                  src={signaturePreview}
+                  alt="signatureURL"
+                  style={{
+                    width: "100%",
+                    maxHeight: 150,
+                    objectFit: "contain",
+                    borderRadius: 10,
+                    marginBottom: 10,
+                  }}
+                />
+              )}
               <Button variant="contained" component="label" fullWidth style={{ marginTop: 10 }}>
                 Update Signature
-                <input type="file" name="signatureURL" hidden onChange={(e) => handleImageChange(e, "SIGNATURE_URL")} />
+                <input
+                  type="file"
+                  name="SIGNATURE_URL"
+                  hidden
+                  onChange={(e) => handleImageChange(e, "SIGNATURE_URL")}
+                />
               </Button>
             </Grid>
           </Grid>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">Cancel</Button>
-        <Button onClick={handleSave} color="primary">Save</Button>
+        <Button onClick={onClose} color="secondary" variant="outlined">
+          Cancel
+        </Button>
+        <Button onClick={handleSave} color="primary" variant="contained">
+          Save
+        </Button>
       </DialogActions>
     </Dialog>
   );

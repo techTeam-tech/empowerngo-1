@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2"; 
 import { registerNgo } from "../../api/masterApi";
 import { uploadToCloudinary } from "../../utils/helper";
 import renderInputField from "../../components/CustomInputField";
 import Loading from "../../components/LoadingSpinner";
-
 const RegisterNGO = () => {
   const {
     register,
@@ -16,41 +14,53 @@ const RegisterNGO = () => {
     watch,
     setValue
   } = useForm();
-
   const [countries, setCountries] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const selectedLogo = watch("logoURL");
   const selectedSignature = watch("signatureURL");
   useEffect(() => {
-    fetch("https://restcountries.com/v3.1/all")
-      .then((res) => res.json())
-      .then((data) => setCountries(data.map((c) => c.name.common).sort()))
-      .catch((err) => console.error("Error fetching countries:", err));
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("https://restcountries.com/v3.1/all");
+        if (!response.ok) throw new Error("Failed to fetch countries");
+        const data = await response.json();
+        setCountries(data.map((c) => c.name.common).sort());
+      } catch (err) {
+        console.error("Error fetching countries:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Error fetching country list!"
+        });
+      }
+    };
+    fetchCountries();
   }, []);
+
+  const handleFileUpload = async (file, type) => {
+    if (file?.[0]) {
+      setUploading(true);
+      const uploadedUrl = await uploadToCloudinary(
+        file[0],
+        type,
+        setValue,
+        setUploading
+      );
+      return uploadedUrl;
+    }
+    return null;
+  };
 
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
-      setUploading(true);
 
-      const logoUrl = selectedLogo?.[0]
-        ? await uploadToCloudinary(
-            selectedLogo[0],
-            "logoURL",
-            setValue,
-            setUploading
-          )
-        : null;
-      const signatureUrl = selectedSignature?.[0]
-        ? await uploadToCloudinary(
-            selectedSignature[0],
-            "signatureURL",
-            setValue,
-            setUploading
-          )
-        : null;
+      const logoUrl = await handleFileUpload(selectedLogo, "logoURL");
+      const signatureUrl = await handleFileUpload(
+        selectedSignature,
+        "signatureURL"
+      );
 
       const formData = new FormData();
       formData.append("reqType", "s");
@@ -63,12 +73,28 @@ const RegisterNGO = () => {
         }
       });
 
-      await registerNgo(formData);
-      toast.success("NGO Registered Successfully!");
+      const response = await registerNgo(formData);
+      if (response.statusCode === 409) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An NGO with this Email or PAN already exists."
+        });
+        return; 
+      }
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "NGO Registered Successfully!"
+      });
       reset();
     } catch (error) {
       console.error("Error registering NGO:", error);
-      toast.error("Error registering NGO!");
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Error registering NGO! Please try again."
+      });
     } finally {
       setIsSubmitting(false);
       setUploading(false);
@@ -85,69 +111,116 @@ const RegisterNGO = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-2 gap-4"
       >
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "NGO Name",
-            "ngoName",
-            { required: "NGO name is required" },
-            "text",
-            "Enter NGO Name"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Registration Number",
-            "ngoRegNumber",
-            { required: "registration number is required" },
-            "text",
-            "Enter registration number"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "NGO Address",
-            "ngoAddress",
-            { required: "NGO Address is required" },
-            "text",
-            "Enter NGO Address"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Ngo City",
-            "ngoCity",
-            { required: "City is required" },
-            "text",
-            "Enter City"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "State",
-            "ngoState",
-            { required: "State is required" },
-            "text",
-            "Enter State"
-          )}
-        </div>
+        {[
+          {
+            label: "NGO Name",
+            name: "ngoName",
+            type: "text",
+            placeholder: "Enter NGO Name"
+          },
+          {
+            label: "Registration Number",
+            name: "ngoRegNumber",
+            type: "text",
+            placeholder: "Enter registration number"
+          },
+          {
+            label: "NGO Address",
+            name: "ngoAddress",
+            type: "text",
+            placeholder: "Enter NGO Address"
+          },
+          {
+            label: "City",
+            name: "ngoCity",
+            type: "text",
+            placeholder: "Enter City"
+          },
+          {
+            label: "State",
+            name: "ngoState",
+            type: "text",
+            placeholder: "Enter State"
+          },
+          {
+            label: "Pin Code",
+            name: "ngoPinCode",
+            type: "text",
+            placeholder: "Enter Pin Code"
+          },
+          {
+            label: "Email",
+            name: "ngoEmail",
+            type: "email",
+            placeholder: "Enter your email"
+          },
+          {
+            label: "Contact",
+            name: "ngoContact",
+            type: "text",
+            placeholder: "Enter Contact"
+          },
+          {
+            label: "Authorized Person",
+            name: "authorizedPerson",
+            type: "text",
+            placeholder: "Enter Authorized Person"
+          },
+          {
+            label: "Pan Number",
+            name: "ngoPAN",
+            type: "text",
+            placeholder: "Enter Pan Number"
+          },
+          {
+            label: "Contact Person",
+            name: "contactPerson",
+            type: "text",
+            placeholder: "Enter Contact Person"
+          },
+          {
+            label: "12A Number",
+            name: "ngo12ANumber",
+            type: "text",
+            placeholder: "Enter 12A Number"
+          },
+          {
+            label: "CSR Number",
+            name: "ngoCSRNumber",
+            type: "text",
+            placeholder: "Enter Ngo CSR Number"
+          },
+          {
+            label: "FCRA Number",
+            name: "ngoFCRANumber",
+            type: "text",
+            placeholder: "Enter Ngo FCRA Number"
+          },
+          {
+            label: "80G Number",
+            name: "ngo80GNumber",
+            type: "text",
+            placeholder: "Enter 80G Number"
+          }
+        ].map((field, index) => (
+          <div key={index}>
+            {renderInputField(
+              register,
+              errors,
+              field.label,
+              field.name,
+              { required: `${field.label} is required` },
+              field.type,
+              field.placeholder
+            )}
+          </div>
+        ))}
         <div className="col-span-1">
           <label className="block text-gray-700 font-medium mb-2">
             Country
           </label>
           <select
-            {...register("ngoCountry", {
-              required: "Country is required"
-            })}
+            {...register("ngoCountry", { required: "Country is required" })}
             className="w-full p-2 border border-gray-300 rounded-lg"
           >
             <option value="">Select Country</option>
@@ -157,183 +230,34 @@ const RegisterNGO = () => {
               </option>
             ))}
           </select>
-          {errors.country && (
+          {errors.ngoCountry && (
             <p className="text-red-500 text-sm mt-1">
-              {errors.country.message}
+              {errors.ngoCountry.message}
             </p>
           )}
         </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Pin Code",
-            "ngoPinCode",
-            {
-              required: "Pin Code is required",
-              pattern: {
-                value: /^[0-9]{6}$/,
-                message: "Pin Code should be 6 digit number"
-              }
-            },
-            "text",
-            "Enter Pin Code"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Email",
-            "ngoEmail",
-            {
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                message: "Enter a valid email"
-              }
-            },
-            "email",
-            "Enter your email"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Contact",
-            "ngoContact",
-            {
-              required: "Contact is required",
-              pattern: {
-                value: /^[0-9]{10}$/,
-                message: "Enter a valid contact number"
-              }
-            },
-            "text",
-            "Enter Contact"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Authorized Person",
-            "authorizedPerson",
-            {
-              required: "Authorized person is required",
-              pattern: {
-                value: /^[a-zA-Z ]+$/,
-                message: "Enter a valid name"
-              }
-            },
-            "text",
-            "Enter Authorized Person"
-          )}
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            NGO Image (Docs)
-          </label>
-          <input
-            type="file"
-            {...register("logoURL")}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            NGO Signature (Docs)
-          </label>
-          <input
-            type="file"
-            {...register("signatureURL")}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Pan Number",
-            "ngoPAN",
-            {
-              required: "Pan Number is required",
-              pattern: {
-                value: "/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/",
-                message: "Invalid PAN format (e.g., ABCDE1234F)"
-              }
-            },
-            "text",
-            "Enter Pan Number"
-          )}
-        </div>
-
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Contact Person",
-            "contactPerson",
-            {
-              required: "Contact person is required",
-              pattern: {
-                vaue: "/^[0-9]{10}$/,",
-                message: "Invalid contact number (e.g., 1234567890)"
-              }
-            },
-            "text",
-            "Enter Contact Person"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "12A Number",
-            "ngo12ANumber",
-            { required: "12A Number is required" },
-            "text",
-            "Enter 12A Number"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Ngo Csr",
-            "ngoCSRNumber",
-            "text",
-            "Enter Ngo CSR Number"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "Ngo FCRA",
-            "ngoFCRANumber",
-            "text",
-            "Enter Ngo FCRA Number"
-          )}
-        </div>
-        <div>
-          {renderInputField(
-            register,
-            errors,
-            "80G Number",
-            "ngo80GNumber",
-            { required: "80G Number is required" },
-            "text",
-            "Enter 80G Number"
-          )}
-        </div>
+        {[
+          { label: "NGO Image (Docs)", name: "logoURL" },
+          { label: "NGO Signature (Docs)", name: "signatureURL" }
+        ].map((field, index) => (
+          <div key={index}>
+            <label className="block text-gray-700 font-medium mb-2">
+              {field.label}
+            </label>
+            <input
+              type="file"
+              {...register(field.name)}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+        ))}
         <div className="col-span-2 flex justify-end">
           <button
             type="submit"
             className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+            disabled={isSubmitting}
           >
-            Register NGO
+            {isSubmitting ? "Registering..." : "Register NGO"}
           </button>
         </div>
       </form>

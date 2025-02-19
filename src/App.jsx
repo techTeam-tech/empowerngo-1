@@ -9,8 +9,7 @@ import Layout from "../src/components/Layout/Layout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SignUp from "./pages/signUp/SignUp";
 import SignIn from "./pages/signIn/SignIn";
-import AddUpdateDonor from "./components/Manage Donor/AddDonor";
-import SearchDonor from "./components/Manage Donor/SearchDonor";
+import ManageDonor from "./components/Manage Donor/ManageDonor";
 import ProjectAndPurpose from "./components/ManageProject/AddProject";
 import Managestaff from "./components/Manage Staff/Managestaff";
 import { ROLES } from "../src/utils/constants";
@@ -33,10 +32,10 @@ function App() {
         setUserRole(parsedUser?.ROLE_CODE || ROLES.NGO_CA);
       }
       setLoading(false);
-    }, 1000); // Simulating a delay for loading
+    }, 1000); 
   }, []);
 
-  if (loading) return <Loading />; // Show loading component while authentication is being checked
+  if (loading) return <Loading />; 
 
   const ProtectedRoute = ({ children, allowedRoles }) => {
     if (!isAuthenticated) {
@@ -51,7 +50,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
         <Route path="/signup" element={<SignUp />} />
         <Route
           path="/signin"
@@ -63,8 +61,6 @@ function App() {
             )
           }
         />
-
-        {/* Protected Routes inside Layout */}
         <Route
           path="/"
           element={
@@ -77,8 +73,6 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
-
-          {/* Super Admin Routes */}
           <Route
             path="addstaff"
             element={
@@ -108,20 +102,11 @@ function App() {
             }
           />
 
-          {/* Admin Routes */}
           <Route
             path="adddonor"
             element={
-              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN]}>
-                <AddUpdateDonor />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="searchDonor"
-            element={
-              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN, ROLES.NGO_STAFF]}>
-                <SearchDonor />
+              <ProtectedRoute allowedRoles={[ROLES.NGO_ADMIN,ROLES.SUPER_ADMIN]}>
+                <ManageDonor />
               </ProtectedRoute>
             }
           />
@@ -137,7 +122,6 @@ function App() {
           />
         </Route>
 
-        {/* Catch-All Redirect */}
         <Route
           path="*"
           element={

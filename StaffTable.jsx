@@ -1,4 +1,4 @@
-import { useState, useEffect,useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -11,6 +11,8 @@ import {
   TextField,
   Button,
 } from "@mui/material";
+import EditUserForm from "./EditUserForm"; // Import the new component
+
 import { retrieveUserList } from "../../api/masterApi";
 
 const StaffTable = () => {
@@ -33,14 +35,8 @@ const StaffTable = () => {
     fetchUserList();
   }, []);
 
-  // const filteredStaff = useMemo(() => {
-  //   return searchTerm
-  //     ? userList.filter((staff) => (staff.NAME || "").toLowerCase().includes(searchTerm.toLowerCase()))
-  //     : userList;
-  // }, [userList, searchTerm]);
-
   const filteredStaff = useMemo(() => {
-    return Array.isArray(userList) && searchTerm
+    return searchTerm
       ? userList.filter((staff) => (staff.NAME || "").toLowerCase().includes(searchTerm.toLowerCase()))
       : userList;
   }, [userList, searchTerm]);
