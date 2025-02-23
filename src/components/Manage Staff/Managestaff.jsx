@@ -5,7 +5,7 @@ import StaffTable from "./StaffTable";
 const ManageStaff = () => {
   const [staffList, setStaffList] = useState([]);
   const [editStaff, setEditStaff] = useState(null);
-  const [showForm, setShowForm] = useState(false); // Toggle form visibility
+  const [showForm, setShowForm] = useState(false); 
 
   useEffect(() => {
     const storedStaff = JSON.parse(localStorage.getItem("staffList")) || [];
@@ -25,11 +25,11 @@ const ManageStaff = () => {
     setStaffList(updatedList);
     localStorage.setItem("staffList", JSON.stringify(updatedList));
     setEditStaff(null);
-    setShowForm(false); // Hide form after submission
+    setShowForm(false); 
   };
 
   const toggleForm = () => {
-    setShowForm(!showForm); // Toggle the form visibility
+    setShowForm(!showForm); 
   };
 
   return (

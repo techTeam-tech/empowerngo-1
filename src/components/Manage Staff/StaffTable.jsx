@@ -1,4 +1,4 @@
-import { useState, useEffect,useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -10,7 +10,9 @@ import {
   Paper,
   TextField,
   Button,
+  CircularProgress
 } from "@mui/material";
+import EditUserForm from "./EditUserForm"; 
 import { retrieveUserList } from "../../api/masterApi";
 
 const StaffTable = () => {
@@ -20,33 +22,33 @@ const StaffTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     const fetchUserList = async () => {
+      setLoading(true); 
       try {
         const response = await retrieveUserList("list");
         setUserList(response?.payload || []);
       } catch (err) {
         console.error("Failed to fetch User data", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchUserList();
   }, []);
 
-  // const filteredStaff = useMemo(() => {
-  //   return searchTerm
-  //     ? userList.filter((staff) => (staff.NAME || "").toLowerCase().includes(searchTerm.toLowerCase()))
-  //     : userList;
-  // }, [userList, searchTerm]);
-
   const filteredStaff = useMemo(() => {
     return Array.isArray(userList) && searchTerm
-      ? userList.filter((staff) => (staff.NAME || "").toLowerCase().includes(searchTerm.toLowerCase()))
+      ? userList.filter((staff) =>
+          (staff.NAME || "").toLowerCase().includes(searchTerm.toLowerCase())
+        )
       : userList;
   }, [userList, searchTerm]);
 
   const handleEdit = (staff) => {
-    setSelectedUser(staff); // Pass full staff object for editing
+    setSelectedUser(staff); 
     setEditOpen(true);
   };
 
@@ -81,7 +83,16 @@ const StaffTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              {["Name", "Email", "Phone", "Role", "NGO Name", "Created by", "Status","Actions"].map((heading) => (
+              {[
+                "Name",
+                "Email",
+                "Phone",
+                "Role",
+                "NGO Name",
+                "Created by",
+                "Status",
+                "Actions"
+              ].map((heading) => (
                 <TableCell key={heading}>
                   <b>{heading}</b>
                 </TableCell>
@@ -89,29 +100,42 @@ const StaffTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredStaff.length === 0 ? (
+            {loading ? ( 
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={8} align="center">
+                  <CircularProgress size={24} />
+                </TableCell>
+              </TableRow>
+            ) : filteredStaff.length === 0 ? ( 
+              <TableRow>
+                <TableCell colSpan={8} align="center">
                   No staff found.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredStaff.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((staff, index) => (
-                <TableRow key={index}>
-                  <TableCell>{staff.NAME}</TableCell>
-                  <TableCell>{staff.EMAIL}</TableCell>
-                  <TableCell>{staff.CONTACT_NUMBER}</TableCell>
-                  <TableCell>{staff.ROLE_NAME}</TableCell>
-                  <TableCell>{staff.NGO_NAMES}</TableCell>
-                  <TableCell>{staff.CREATED_BY_NAME}</TableCell>
-                  <TableCell>{staff.USER_STATUS}</TableCell>
-                  <TableCell>
-                    <Button variant="contained" color="primary" size="small" onClick={() => handleEdit(staff)}>
-                      Edit
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
+              filteredStaff
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((staff, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{staff.NAME}</TableCell>
+                    <TableCell>{staff.EMAIL}</TableCell>
+                    <TableCell>{staff.CONTACT_NUMBER}</TableCell>
+                    <TableCell>{staff.ROLE_NAME}</TableCell>
+                    <TableCell>{staff.NGO_NAMES}</TableCell>
+                    <TableCell>{staff.CREATED_BY_NAME}</TableCell>
+                    <TableCell>{staff.USER_STATUS}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() => handleEdit(staff)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
             )}
           </TableBody>
         </Table>
@@ -128,10 +152,12 @@ const StaffTable = () => {
         }}
         rowsPerPageOptions={[5, 10, 25]}
       />
-
-      {/* Render Edit User Form */}
       {editOpen && selectedUser && (
-        <EditUserForm open={editOpen} onClose={handleEditClose} user={selectedUser} />
+        <EditUserForm
+          open={editOpen}
+          onClose={handleEditClose}
+          user={selectedUser}
+        />
       )}
     </Paper>
   );

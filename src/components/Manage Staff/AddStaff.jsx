@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { registerUser, retrieveNGOList,retrieveUserList  } from "../../api/masterApi";
+import { registerUser, retrieveNGOList } from "../../api/masterApi";
 import renderInputField from "../../components/CustomInputField";
 import Loading from "../../components/LoadingSpinner";
 import Swal from "sweetalert2";
@@ -16,13 +16,16 @@ const AddStaff = ({ onAddOrUpdateStaff, editStaff, setEditStaff }) => {
     reset,
     setValue,
   } = useForm();
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [ngoList, setNgoList] = useState([]);
   const [selectedNgo, setSelectedNgo] = useState("");
+
   const roleMapping = { "NGO ADMIN": 2, "NGO STAFF": 3, "NGO CA": 4 };
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData?.USER_ID) setValue("userID", userData.USER_ID);
@@ -40,6 +43,7 @@ const AddStaff = ({ onAddOrUpdateStaff, editStaff, setEditStaff }) => {
       reset();
     }
   }, [editStaff, setValue, reset]);
+
   useEffect(() => {
     const fetchNGOList = async () => {
       try {
@@ -52,10 +56,13 @@ const AddStaff = ({ onAddOrUpdateStaff, editStaff, setEditStaff }) => {
         setNgoList([]); 
       }
     };
+
     if (userRole === 1) {
       fetchNGOList();
     }
   }, [userRole]);
+
+
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
@@ -119,6 +126,7 @@ const AddStaff = ({ onAddOrUpdateStaff, editStaff, setEditStaff }) => {
           "Enter First name",
           FaUser
         )}
+
         {renderInputField(
           register,
           errors,

@@ -1,6 +1,5 @@
 import api from "./api";
 
-//method wto invoke userSignIn
 export const loginUser = async (credentials) => {
   try {
     const response = await api.post("/userSignIn", credentials);
@@ -13,7 +12,6 @@ export const loginUser = async (credentials) => {
   }
 };
 
-//method wto invoke userSignIn /manageNGO
 export const registerNgo = async (formData) => {
   try {
     console.log("formData - ", formData);
@@ -32,7 +30,7 @@ export const retrieveNGOList = async (reqType, ngoId = null) => {
       throw new Error("Missing authentication token");
     }
     if (!["list", "info"].includes(reqType)) {
-      throw new Error("\"reqType\" must be one of [list, info]");
+      throw new Error('"reqType" must be one of [list, info]');
     }
     const requestData = { reqType };
     if (reqType === "info" && !ngoId) {
@@ -45,8 +43,8 @@ export const retrieveNGOList = async (reqType, ngoId = null) => {
     console.log("Token Sent:", token);
     const response = await api.post("/retrieveNGOInfo", requestData, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     return response.data;
@@ -55,7 +53,6 @@ export const retrieveNGOList = async (reqType, ngoId = null) => {
     throw error.response?.data || error.message;
   }
 };
-
 
 export const manageProject = async (formData, reqType) => {
   try {
@@ -87,7 +84,6 @@ export const getProjects = async (ngoID) => {
   try {
     const response = await api.post("/manageProject", { reqType: "g", ngoID });
     return response.data.payload || [];
-    console.log("responce projects - ", response);
   } catch (error) {
     throw error.response?.data || error.message;
   }
@@ -109,8 +105,7 @@ export const getPurposes = async (ngoID, projectID) => {
 export const registerUser = async (formData) => {
   try {
     console.log("formData - ", formData);
-    const response = await api.post("/manageUserRegistration", formData, {
-    });
+    const response = await api.post("/manageUserRegistration", formData, {});
     console.log("response - ", response.data);
     return response.data;
   } catch (error) {
@@ -118,15 +113,9 @@ export const registerUser = async (formData) => {
   }
 };
 
-//method to get registered user list
 export const retrieveUserList = async (reqType) => {
   try {
     const requestData = { reqType };
-
-    //   if (reqType === "list") {
-    //   requestData.ngoID = ngoId;  // Ensure the key matches the backend requirement
-    // }
-
     const response = await api.post("/retrieveUsersInfo", requestData);
     return response.data;
   } catch (error) {
@@ -139,12 +128,16 @@ export const handleStaffRequest = async (formData) => {
     const { reqType } = formData;
 
     if (!["s", "u"].includes(reqType)) {
-      throw new Error("Invalid reqType. Must be 's' for staff save or 'u' for staff update.");
+      throw new Error(
+        "Invalid reqType. Must be 's' for staff save or 'u' for staff update."
+      );
     }
     if (reqType === "s") {
       if (formData.roleCode === 1) {
         if (formData.ngoId) {
-          throw new Error("NGO ID should not be provided for Super Admin role.");
+          throw new Error(
+            "NGO ID should not be provided for Super Admin role."
+          );
         }
       } else if ([2, 3, 4].includes(formData.roleCode)) {
         if (!formData.ngoId) {
@@ -163,7 +156,9 @@ export const handleStaffRequest = async (formData) => {
         }
       } else if (formData.roleCode === 1) {
         if (formData.ngoId) {
-          throw new Error("NGO ID should not be provided for Super Admin role update.");
+          throw new Error(
+            "NGO ID should not be provided for Super Admin role update."
+          );
         }
       } else {
         throw new Error("Invalid role code.");
@@ -179,4 +174,80 @@ export const handleStaffRequest = async (formData) => {
   }
 };
 
+export const retrieveUserInfo = async (reqType, userID) => {
+  try {
+    const requestData = { reqType };
 
+    if (reqType === "info") {
+      requestData.userID = userID;
+    }
+
+    const response = await api.post("/retrieveUsersInfo", requestData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const handleDonorRequest = async (formData, reqType) => {
+  try {
+    if (!["s", "u"].includes(reqType)) {
+      throw new Error(
+        "Invalid reqType. Must be 's' for save or 'u' for update."
+      );
+    }
+    if (reqType === "u") {
+      if (!formData.donorNGOID) {
+        throw new Error("NGO ID is required for updating donor details.");
+      }
+    }
+    const payload = { ...formData, reqType };
+    const response = await api.post("/manageDonor", payload);
+    return response.data;
+  } catch (error) {
+    console.error("Error handling donor request:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getDonorData = async (formData, reqType) => {
+  try {
+    if (!["info", "list"].includes(reqType)) {
+      throw new Error("invalid reqType. Must be 'info' for get info or 'list' for list data");
+    }
+
+    if (reqType === "info" && !formData.donorID) {
+      throw new Error("NGO ID is required for getting donor info");
+    }
+    
+    const payload = { ...formData, reqType };
+    const response = await api.post("/retrieveDonorInfo", payload);
+    
+    return response.data; 
+  } catch (error) {
+    console.error("Error handling donor request:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getSubsPlans = async () => {
+  try {
+    const requestData = { reqType: "fetch" };
+
+    const response = await api.post("/retrieveSubsPackages", requestData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const registerPlan = async (formData) => {
+  try {
+    console.log("formData - ", formData);
+    const response = await api.post("/manageSubsPackage", formData, {});
+    console.log("response - ", response.data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

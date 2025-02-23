@@ -51,7 +51,7 @@ export const menuItems = [
   {
     title: "Manage Donations",
     icon: "CurrencyDollarIcon",
-    route: "/manageUSer",
+    route: "/manageDonation",
     roles: [1, 2, 4],
   },
   {
@@ -66,6 +66,14 @@ export const menuItems = [
     route: "/addproject",
     roles: [1, 2, 3],
   },
+  {
+    title:"Manage Plan",
+    icon: "ChartBarIcon",
+    route: "/managePlan",
+    roles: [1, 2, 3],
+  }
 ];
 
 export default ROLES;
+
+export const donorTypes = ["Individual", "Corporate", "Group", "NGO"];
